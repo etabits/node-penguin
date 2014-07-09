@@ -19,8 +19,9 @@ html
 					span.dropdown-arrow
 					ul.dropdown-menu(role=menu)
 						each model in models
-							li
-								a(href='#{mountPath}/#{model.slug}')=model.label
+							if !model.hide
+								li
+									a(href='#{mountPath}/#{model.slug}')=model.label
 
 
 		.container-fluid

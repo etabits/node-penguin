@@ -12,6 +12,8 @@ widgets = forms.widgets
 
 defaults = require './defaults'
 
+
+
 class Admin
 	self = null
 	constructor: (@opts={}) ->
@@ -28,19 +30,19 @@ class Admin
 			for name, model of models
 				#console.log name, model
 
-				vModel = merge true, model.$p, {
+				#continue if .dontInclude
+				self.modelDetails[name] = self.getModelDetails {
 					base: name
 					slug: name
 				}
-				self.modelDetails[name] = self.getModelDetails vModel
 
 			self.opts.vModels ?= {}
 			for vt, vModel of self.opts.vModels
-				#console.log vt, vModel
 				model = self.models[vModel.base]
-				vModel = merge true, model.$p, {
-						slug: vt
-					}, vModel
+				vModel.slug ?= vt
+
+				console.log vt, vModel
+
 
 				self.modelDetails[vModel.slug] = self.getModelDetails vModel
 
@@ -71,18 +73,20 @@ class Admin
 			
 
 
-	_completeModelDetails: (model)->
 
 	@_t: (str)->
 		str.replace(/([a-z])([A-Z])/g, '$1 $2').replace /(?:^|_)[a-z]/g, (m) -> m.replace(/^_/, ' ').toUpperCase()
 
 	getModelDetails: (vModel)=>
 		model = self.models[vModel.base]
-		ret = merge true, defaults.vModel, vModel, {
-			label:	@constructor._t(vModel.slug)
-			obj:	model
-			path:	"#{self.opts.mountPath}/#{vModel.slug}"
-		}
+		overrides = if vModel.slug == vModel.base then {} else defaults.model$pOverrides
+		ret = merge true, defaults.model$p, model.$p, overrides, {
+				label:	@constructor._t(vModel.slug)
+				path:	"#{self.opts.mountPath}/#{vModel.slug}"
+			}, vModel, {
+				obj: model
+			}
+		console.log vModel.slug, defaults.model$p, model.$p, defaults.model$pOverrides, vModel
 
 		#console.log '>>>', defaults.vModel
 		formFields = {}

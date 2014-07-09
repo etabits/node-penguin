@@ -7,9 +7,13 @@ d.opts = {
 	modelsPath:		path.resolve(process.cwd(), 'models')
 	mountPath:		'/admin'
 }
-d.vModel = {
+d.model$p = {
 	fields: []
 	conditions: {}
+	hide: false
+}
+d.model$pOverrides = {
+	hide: false
 }
 d.field$p = {
 	type: 'string'
