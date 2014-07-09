@@ -1,0 +1,22 @@
+extends layout
+
+block content
+	//- console.log(model)
+	table.table.table-striped.table-hover
+		thead
+			tr
+				th #
+				each field in model.fields
+					- console.log(field)
+					if -1 != field.$p.display.indexOf('l')
+						th=t(field.path)
+
+		tbody
+			each row in docs
+				- var id = row._id.toString()
+				tr(data-id=)
+					td
+						a(href='#{model.path}/#{id}') Edit
+					each field in model.fields
+						if -1 != field.$p.display.indexOf('l')
+							td=row[field.path]

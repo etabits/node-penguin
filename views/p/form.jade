@@ -1,0 +1,131 @@
+mixin label(field, name, det)
+	- var classes = 'control-label'
+	- if (formOpts.labelClasses) classes += ' ' + formOpts.labelClasses
+	label(for=det.id, class=classes)
+		= det.label
+		if field.required
+			span.required-star *
+
+mixin error(field, name, det)
+	if field.error
+		.alert.alert-danger.form-error-tooltip=t(field.error)
+
+mixin field_select(field, name, det)
+	- var source = field.choices
+	- //console.log (field)
+	- if (field.choices_ar && 'ar'==lang) source = field.choices_ar
+	select.form-control(id=det.id, name=name)
+		- //console.log (field)
+		option(value=field._pleaseSelectValue?field._pleaseSelectValue:'')=t('Please select')
+		if source.length
+			each v in source
+				option(value=v, selected=v===field.value)= t(v)
+		else
+			for l, v in source
+				option(value=v, selected=v===field.value)= t(l)
+
+mixin field_radios(field, name, det)
+	- var optionClasses = 'inner-label'
+	- if (field.optionClasses) optionClasses+= ' '+ field.optionClasses
+	for l, v in field.choices
+		label.col-sm-4(for='#{det.id}_#{v}')
+			input(id='#{det.id}_#{v}', type='radio', value=v, name=name, checked=v===field.value)
+			|  
+			span(class=optionClasses)=t(l)
+
+
+mixin field_checkboxes(field, name, det)
+	- var optionClasses = 'inner-label'
+	- if (field.optionClasses) optionClasses+= ' '+ field.optionClasses
+	- var v2;
+	br
+	for l, v in field.choices
+		- v2 = field.choices.length? l : v
+		label.col-sm-4(for='#{det.id}_#{v2}')
+			input(id='#{det.id}_#{v2}', type='checkbox', value=v2, name=name, checked=v2===field.value)
+			|  
+			span(class=optionClasses)=t(l)
+
+mixin field_checkbox(field, name, det, widgetHTML)
+	label(for='id_#{name}')
+		!= widgetHTML
+		|  
+		= det.label
+		if field.required
+			span.required-star *
+
+mixin display_field(field, name)
+	- var det = {}
+	- det.id = field.id? field.id : 'id_' + name
+
+	- var widgetHTML = field.widget.toHTML(name, field)
+	- det.label = t(field.label? field.label : name)
+	- det.cssClasses = field.$classes ? field.$classes + ' ' : ''
+	- det.cssClasses += 'field form-group field-widget-' + field.widget.type
+	- if (field.required) det.cssClasses += ' field-required'
+	- if (field.error) det.cssClasses += ' has-error'
+	- det.cssClasses += ' field-id-' + name
+	- det.fieldClasses = 'controls'
+	- if (formOpts.fieldClasses) det.fieldClasses += ' ' + formOpts.fieldClasses
+	- if (formOpts.usePlaceholder || field.usePlaceholder) {det.cssClasses += ' uses-placeholder'; widgetHTML=widgetHTML.replace('<input ', '<input placeholder="'+det.label+(field.required?'':'')+'" ')}
+	
+	- console.log(det, classes)
+	div(class=det.cssClasses)
+		if field.help_block
+			span.help-block=det.label
+
+		else if 'multipleRadio' == field.widget.type
+			+label(field, name, det)
+			div(class=det.fieldClasses)
+				+field_radios(field, name, det)
+				+error(field, name, det)
+
+		else if 'multipleCheckbox' == field.widget.type
+			+label(field, name, det)
+			div(class=det.fieldClasses)
+				+field_checkboxes(field, name, det)
+				+error(field, name, det)
+
+		else if 'select' == field.widget.type
+			+label(field, name, det)
+			div(class=det.fieldClasses)
+				+field_select(field, name, det)
+				+error(field, name, det)
+
+		else if 'checkbox' == field.widget.type
+			div(class=det.fieldClasses)
+				+field_checkbox(field, name, det, widgetHTML)
+				+error(field, name, det)
+		else
+			+label(field, name, det)
+			div(class=det.fieldClasses)
+				if field.required 
+					- widgetHTML = widgetHTML.replace(/<input/g, '<input required')
+
+				if field.placeholder
+					- widgetHTML = widgetHTML.replace(/<input/g, '<input placeholder="'+field.placeholder+'"')
+				if field.info_beside
+					.input-group
+						!= widgetHTML.replace(/<(input|select|textarea)/g, '<$1 class="form-control"')
+						span.input-group-addon=field.info_beside
+				else
+					!= widgetHTML.replace(/<(input|select|textarea)/g, '<$1 class="form-control"')
+				
+
+				+error(field, name, det)
+				if field.info_below
+					span.help-block=t(field.info_below)
+
+if formOpts.horizontal
+	- formOpts.labelClasses = 'col-xs-'+ formOpts.horizontal
+	- formOpts.fieldClasses = 'col-xs-'+ (12-formOpts.horizontal)
+
+
+if false !== formOpts.drawForm
+	each field, name in form.fields
+		- var span = field.span? field.span : 12
+		div(class='col-xs-#{span} field-container-#{field.name}')
+			- //console.log(field); break
+			+display_field(field, name)
+
+
