@@ -51,10 +51,24 @@ else # Production!
 
 penguin = require '../'
 admin = new penguin.Admin {
+	# Defaults
+
+	# The path to the directory containing the mongoose model files.
+	# modelsPath:		path.resolve(process.cwd(), 'models')
+
+	# The path at which the administration panel will be mounted. example.org/admin/
+	# mountPath:		'/admin'
+
+	# A title for the index page
 	indexTitle:		'Administration Home!'
+
+	# Virtual models
 	vModels: {
+		# /admin/pages
 		pages: {
+			# based on the `nodes` model
 			base: 'nodes'
+			# data is filtered using these conditions
 			conditions: {type: 'p'}
 		}
 		articles: {
@@ -62,6 +76,8 @@ admin = new penguin.Admin {
 			conditions: {type: 'a'}
 		}
 	}
+
+
 	preMiddleware: (req, res, next)->
 		#return if -1 != req.headers['user-agent'].indexOf('Firefox') then next() else res.redirect '/'
 		console.log 'Administration Request:', req.url
