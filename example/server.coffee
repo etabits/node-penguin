@@ -51,6 +51,7 @@ else # Production!
 
 penguin = require '../'
 admin = new penguin.Admin {
+	indexTitle:		'Administration Home!'
 	vModels: {
 		pages: {
 			base: 'nodes'

@@ -169,7 +169,7 @@ class Admin
 			.delete			@rNotImplemented		# DELETE
 
 	rIndex: (req, res)=>
-		self._render req, res, 'index', {title: 'Penguin Geese Admin'}
+		self._render req, res, 'index', {title: @opts.indexTitle}
 		#return res.send 'hello!'
 
 	rCollection: (req, res)=>

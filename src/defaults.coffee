@@ -6,6 +6,7 @@ d = {}
 d.opts = {
 	modelsPath:		path.resolve(process.cwd(), 'models')
 	mountPath:		'/admin'
+	indexTitle:		'Penguin Geese Admin'
 }
 d.model$p = {
 	fields: []
