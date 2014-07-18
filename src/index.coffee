@@ -124,6 +124,8 @@ class Admin
 		@setupParams()
 		@setupRoutes()
 
+		if @opts.preMiddleware
+			app.use @opts.mountPath, @opts.preMiddleware
 		app.use @opts.mountPath, @router
 		app.locals.t = @constructor._t
 

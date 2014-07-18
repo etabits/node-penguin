@@ -62,6 +62,10 @@ admin = new penguin.Admin {
 			conditions: {type: 'a'}
 		}
 	}
+	preMiddleware: (req, res, next)->
+		#return if -1 != req.headers['user-agent'].indexOf('Firefox') then next() else res.redirect '/'
+		console.log 'Administration Request:', req.url
+		return next()
 }
 
 admin.setupApp app
