@@ -2,6 +2,7 @@ fs = require 'fs'
 path = require 'path'
 
 express = require 'express'
+mongoose = require 'mongoose'
 merge = require 'merge'
 
 
@@ -28,7 +29,7 @@ class Admin
 		self._readModels @opts.modelsPath, (err, models)->
 			self.models = models
 			for name, model of models
-				#console.log name, model
+				#self.models[model.modelName] = model
 
 				#continue if .dontInclude
 				self.modelDetails[name] = self.getModelDetails {
@@ -117,7 +118,8 @@ class Admin
 			def.type = defaults.typesMap[field.options.type.name][0]
 			def.widget = defaults.typesMap[field.options.type.name][1]
 
-
+		if 'ObjectID' == field.instance
+			fieldOpts.refModel = self.modelDetails[mongoose.models[field.options.ref].collection.name]
 
 		merge true, def, fieldOpts
 
