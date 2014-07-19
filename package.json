@@ -17,6 +17,6 @@
   },
   "peerDependencies": {
     "express": "4.x",
-    "mongoose": "~3.8.12"
+    "mongoose": "3.8.x"
   }
 }
