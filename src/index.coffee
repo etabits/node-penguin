@@ -119,7 +119,7 @@ class Admin
 			def.widget = defaults.typesMap[field.options.type.name][1]
 
 		if 'ObjectID' == field.instance
-			fieldOpts.refModel = self.modelDetails[mongoose.models[field.options.ref].collection.name]
+			fieldOpts.getRefModel = ()-> self.modelDetails[mongoose.models[field.options.ref].collection.name]
 
 		merge true, def, fieldOpts
 

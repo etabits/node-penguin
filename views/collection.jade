@@ -21,6 +21,6 @@ block content
 						- if (-1 == field.$p.display.indexOf('l')) continue;
 						if 'ObjectID' == field.instance
 							td
-								a(href='#{field.$p.refModel.path}/#{row[field.path]._id}')=row[field.path].$pTitle
+								a(href='#{field.$p.getRefModel().path}/#{row[field.path]._id}')=row[field.path].$pTitle
 						else
 							td=row[field.path]
