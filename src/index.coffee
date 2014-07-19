@@ -41,7 +41,7 @@ class Admin
 				model = self.models[vModel.base]
 				vModel.slug ?= vt
 
-				console.log vt, vModel
+				#console.log vt, vModel
 
 
 				self.modelDetails[vModel.slug] = self.getModelDetails vModel
@@ -57,6 +57,7 @@ class Admin
 			js: [
 				"#{@opts.staticsPath}/10-jquery.js"
 				"#{@opts.staticsPath}/20-bootstrap.js"
+				"#{@opts.staticsPath}/90-penguin.js"
 			]
 		}
 		null
@@ -86,7 +87,7 @@ class Admin
 			}, vModel, {
 				obj: model
 			}
-		console.log vModel.slug, defaults.model$p, model.$p, defaults.model$pOverrides, vModel
+		#console.log vModel.slug, defaults.model$p, model.$p, defaults.model$pOverrides, vModel
 
 		#console.log '>>>', defaults.vModel
 		formFields = {}
@@ -94,7 +95,7 @@ class Admin
 		model.schema.eachPath (name, details)->
 			return if '_' == name.substr(0, 1)
 			return if 'undefined'!=typeof ret.conditions[name]
-			fieldOpts = merge true, defaults.field$p, details.options.$p
+			fieldOpts = self.getDefaultFieldOpts(details)
 			#console.log fieldOpts
 			return if fieldOpts.hide
 			details.$p = fieldOpts
@@ -102,10 +103,23 @@ class Admin
 			formFields[name] = fields[fieldOpts.type] {
 				widget: widgets[fieldOpts.widget]()
 			}
+			if 'ObjectID' == details.instance && 'undefined' != typeof details.options.ref
+				ret.fieldsToPopulate.push name
 
 		ret.form = forms.create formFields
 		ret
 
+	getDefaultFieldOpts: (field)->
+		def = defaults.field$p
+		fieldOpts = merge true, field.options.$p
+		#console.log field.options.type.name
+		if not fieldOpts.type && 'undefined' != typeof defaults.typesMap[field.options.type.name]
+			def.type = defaults.typesMap[field.options.type.name][0]
+			def.widget = defaults.typesMap[field.options.type.name][1]
+
+
+
+		merge true, def, fieldOpts
 
 
 	setupApp: (app) =>
@@ -177,7 +191,8 @@ class Admin
 	rCollection: (req, res)=>
 		conditions = req.model.conditions
 		#console.log 'Conditions:', req.model.conditions
-		req.model.obj.find conditions, (err, docs)->
+		#console.log req.model.fieldsToPopulate
+		req.model.obj.find(conditions).populate(req.model.fieldsToPopulate.join(' ')).exec (err, docs)->
 			console.log('ERR', err) if err
 			self._render req, res, 'collection', {
 				docs:	docs
