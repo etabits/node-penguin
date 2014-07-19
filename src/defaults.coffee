@@ -12,6 +12,7 @@ d.model$p = {
 	fields: []
 	conditions: {}
 	hide: false
+	fieldsToPopulate: []
 }
 d.model$pOverrides = {
 	hide: false
@@ -21,6 +22,10 @@ d.field$p = {
 	widget: 'text'
 	hide: false
 	display: 'le'	#list, edit
+}
+d.typesMap = { # constructor / widget
+	String:		['string', 'text']
+	Boolean:	['boolean', 'checkbox']
 }
 
 module.exports = d
