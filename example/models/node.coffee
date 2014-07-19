@@ -5,6 +5,7 @@ schema = mongoose.Schema {
 	content:	{type: String, required: true, $p: {widget: 'textarea', display: 'e'}}
 	type:		{type: String, enum: ['p', 'a']}
 	slug:		{type: String, $p: {hide: true}}
+	user:		{type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }
 
 
