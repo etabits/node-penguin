@@ -8,5 +8,8 @@ userSchema  = mongoose.Schema {
 	isAdmin:		{type: Boolean}
 }
 
+userSchema.virtual('$pTitle').get ()->
+	this.username
+
 User = mongoose.model('User', userSchema)
 module.exports = User
