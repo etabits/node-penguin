@@ -8,7 +8,7 @@ block content
 			input(type='hidden', name=n, value=v)
 		.form-group
 			label.sr-only(for='penguin-search-q') Search
-			input(type='text', id='penguin-search-q', name='q', placeholder='Search...')
+			input(type='text', id='penguin-search-q', name='q', placeholder='Search...', value=urlQuery.q)
 
 			button.btn.btn-primary(type="submit") Search!
 
@@ -25,6 +25,7 @@ block content
 								| &uArr;
 								- sortParam = '-'+sortParam
 							else if urlQuery.sort == '-'+field.path
+								- sortParam = ''
 								| &dArr;
 							a(href=getQueryString({sort:sortParam}))=t(field.path)
 
