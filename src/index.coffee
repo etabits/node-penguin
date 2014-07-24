@@ -192,9 +192,16 @@ class Admin
 		#return res.send 'hello!'
 
 	rCollection: (req, res)=>
-		conditions = req.model.conditions
-		#console.log 'Conditions:', req.model.conditions
+		conditions = merge true, req.model.conditions
 		#console.log req.model.fieldsToPopulate
+		if req.query.q
+			rx = new RegExp(req.query.q, 'i')
+			for f in req.model.fields
+				continue if 'String'!=f.instance
+				continue if conditions[f.path]
+				conditions[f.path] = rx
+			#console.log 'Model: !!', 
+		#console.log 'Conditions:', req.model.conditions
 		query = req.model.obj.find(conditions)
 		query = query.populate(req.model.fieldsToPopulate.join(' '))
 		if req.query.sort
