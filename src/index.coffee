@@ -6,6 +6,7 @@ express = require 'express'
 mongoose = require 'mongoose'
 merge = require 'merge'
 
+require 'mongoose-query-paginate'
 
 forms = require('forms')
 fields = forms.fields
@@ -213,15 +214,21 @@ class Admin
 		query = query.populate(req.model.fieldsToPopulate.join(' '))
 		if req.query.sort
 			query = query.sort(req.query.sort)
-		query.exec (err, docs)->
+		paginationOptions = {
+			perPage: 25
+			delta  : 3
+			page   : req.query.p
+		}
+		query.paginate paginationOptions, (err, result)->
 			console.log('ERR', err) if err
 
 			res.locals.getQueryString = (newObj)-> '?'+querystring.stringify merge(true, req.query, newObj)
 
 			self._render req, res, 'collection', {
-				docs:	docs
+				docs:	result.results
 				title:	req.model.label
 				urlQuery:	req.query
+				pagination: result
 			}
 
 	rNotImplemented: (req, res)=>

@@ -42,3 +42,20 @@ block content
 								a(href='#{field.$p.getRefModel().path}/#{row[field.path]._id}')=row[field.path].$pTitle
 						else
 							td=row[field.path]
+
+	hr
+	p: em Displaying records 
+		=(pagination.current-1)*pagination.options.perPage+1
+		|  to 
+		=(pagination.current-1)*pagination.options.perPage+docs.length
+		|  out of 
+		=pagination.count
+		|  total documents.
+	ul.pagination
+		li
+			a(href=getQueryString({p:1})) &laquo;
+		each pNumber in pagination.pages
+			li(class=(pNumber==pagination.current)?'active':'')
+				a(href=getQueryString({p:pNumber}))=pNumber
+		li
+			a(href=getQueryString({p:pagination.last})) &raquo;
