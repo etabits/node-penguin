@@ -1,5 +1,6 @@
 fs = require 'fs'
 path = require 'path'
+querystring = require 'querystring'
 
 express = require 'express'
 mongoose = require 'mongoose'
@@ -194,11 +195,19 @@ class Admin
 		conditions = req.model.conditions
 		#console.log 'Conditions:', req.model.conditions
 		#console.log req.model.fieldsToPopulate
-		req.model.obj.find(conditions).populate(req.model.fieldsToPopulate.join(' ')).exec (err, docs)->
+		query = req.model.obj.find(conditions)
+		query = query.populate(req.model.fieldsToPopulate.join(' '))
+		if req.query.sort
+			query = query.sort(req.query.sort)
+		query.exec (err, docs)->
 			console.log('ERR', err) if err
+
+			res.locals.getQueryString = (newObj)-> '?'+querystring.stringify merge(true, req.query, newObj)
+
 			self._render req, res, 'collection', {
 				docs:	docs
-				title:	req.model.label 
+				title:	req.model.label
+				urlQuery:	req.query
 			}
 
 	rNotImplemented: (req, res)=>

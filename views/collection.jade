@@ -9,7 +9,14 @@ block content
 				each field in model.fields
 					- console.log(field)
 					if -1 != field.$p.display.indexOf('l')
-						th=t(field.path)
+						th
+							- var sortParam = field.path
+							if urlQuery.sort == field.path
+								| &uArr;
+								- sortParam = '-'+sortParam
+							else if urlQuery.sort == '-'+field.path
+								| &dArr;
+							a(href=getQueryString({sort:sortParam}))=t(field.path)
 
 		tbody
 			each row in docs
