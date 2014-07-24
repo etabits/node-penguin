@@ -196,12 +196,19 @@ class Admin
 		#console.log req.model.fieldsToPopulate
 		if req.query.q
 			rx = new RegExp(req.query.q, 'i')
+			$orConditions = []
 			for f in req.model.fields
 				continue if 'String'!=f.instance
+				#console.log f.instance, f.path
 				continue if conditions[f.path]
-				conditions[f.path] = rx
-			#console.log 'Model: !!', 
-		#console.log 'Conditions:', req.model.conditions
+				c = {}
+				c[f.path] = rx
+				$orConditions.push c
+			if $orConditions.length
+				conditions.$or = $orConditions
+			#console.log 'or conditions', $orConditions
+
+		#console.log 'Conditions:', conditions, 
 		query = req.model.obj.find(conditions)
 		query = query.populate(req.model.fieldsToPopulate.join(' '))
 		if req.query.sort
