@@ -1,6 +1,7 @@
 extends layout
 
 block content
+	a.pull-left.btn.btn-primary(href='#{model.path}/add') Add a New #{model.label.replace(/s$/, '')}...
 	//- console.log(model)
 	form.form-inline.pull-right(role='form')
 		each v, n in urlQuery

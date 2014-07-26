@@ -181,6 +181,7 @@ class Admin
 			multer  = require('multer')
 			self.multerMiddleware = multer {
 				dest: './uploads/'
+				includeEmptyFields: true
 			}
 
 		self.multerMiddleware
@@ -200,9 +201,14 @@ class Admin
 			postMiddlewares.push @getMulterMiddleware()
 			postMiddlewares.push fileManager.prepareFilesMiddleware
 
+
+		@router.route('/:collection/add')
+			.get			@rEdit					# Add form
+			.post			postMiddlewares, @rEdit	# Add
+
 		@router.route('/:collection/:id')
 			.get			@rEdit					# EDIT
-			.post			postMiddlewares, @rEdit					# UPDATE
+			.post			postMiddlewares, @rEdit	# UPDATE
 			.delete			@rNotImplemented		# DELETE
 
 	rIndex: (req, res)=>
@@ -257,14 +263,19 @@ class Admin
 		res.render path.resolve(__dirname, '../views/', template), locals
 
 	rEdit: (req, res)->
-
+		addMode = !req.row
 		form = req.model.form
+		#console.log form
 		#console.log 'Row: ', req.row
 		renderObj = {
 			formOpts: {}
 		}
+		#console.log req.body
 		form.handle req, {
 			success: (nform)->
+				if addMode
+					req.row = new req.model.obj
+
 				dataToSet = {}
 				dataToSet[k]=v for k,v of nform.data
 
@@ -273,6 +284,11 @@ class Admin
 					if 'ObjectID' == field.instance && 'File' == field.options.ref && !dataToSet[field.path]
 						delete dataToSet[field.path]
 
+				# Also set the conditions as field values
+				if addMode
+					dataToSet[k] = v for k, v of req.model.conditions
+					#return res.send 'WIP'
+
 				req.row[k]=v for k,v of dataToSet
 
 				#return console.log '111',  nform.data, dataToSet, req.row
@@ -280,10 +296,13 @@ class Admin
 				req.row.save (err, doc)->
 					#return console.log doc
 					if err
+						#console.log 'Error', err, err.errors
 						renderObj.form = nform
-						for fdName, error of err.errors
-							renderObj.form.fields[fdName].error = error.message
-						#console.log 'Error', err
+						if err.errors # Need to have a closer look at this...
+							for fdName, error of err.errors
+								renderObj.form.fields[fdName].error = error.message
+						else
+							renderObj.form.fields[err.path].error = err.message
 						self._render req, res, 'edit', renderObj
 					else
 						res.redirect './'
@@ -298,7 +317,10 @@ class Admin
 				#console.log 'Form Empty'
 				#console.log req.row
 				
-				renderObj.form = form.bind(req.row)
+				if addMode
+					renderObj.form = form
+				else
+					renderObj.form = form.bind(req.row)
 				self._render req, res, 'edit', renderObj
 
 		}

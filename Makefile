@@ -21,4 +21,5 @@ node_modules/express:
 	ln -s ../example/node_modules/mongoose	node_modules/mongoose
 
 example-run: node_modules/express
+	-rm -fr example/uploads
 	cd example/ && npm install && coffee seed.coffee && supervisor -e 'jade|coffee|js|json' -i ../views -w ../ -x coffee -n error -- server.coffee
