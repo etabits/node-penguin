@@ -17,7 +17,7 @@ Seeds = {
 	]
 }
 
-for c in [1..100]
+for c in [1..1]
 	Seeds.Node.push {
 		type: 'a'
 		user: IDs[0]

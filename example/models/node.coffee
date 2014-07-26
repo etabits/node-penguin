@@ -6,6 +6,8 @@ schema = mongoose.Schema {
 	type:		{type: String, enum: ['p', 'a']}
 	slug:		{type: String, $p: {hide: true}}
 	user:		{type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+	cover:		{type: mongoose.Schema.Types.ObjectId, ref: 'File', $p: {widget: 'file'} }
+	thumb:		{type: mongoose.Schema.Types.ObjectId, ref: 'File', $p: {widget: 'file'} }
 }
 
 

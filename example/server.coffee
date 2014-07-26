@@ -59,6 +59,8 @@ admin = new penguin.Admin {
 	# The path at which the administration panel will be mounted. example.org/admin/
 	# mountPath:		'/admin'
 
+	fileManager: true
+
 	# A title for the index page
 	indexTitle:		'Administration Home!'
 
