@@ -37,7 +37,7 @@ block content
 						a(href='#{model.path}/#{id}') Edit
 					each field in model.fields
 						- if (-1 == field.$p.display.indexOf('l')) continue;
-						if 'ObjectID' == field.instance
+						if 'ObjectID' == field.instance && row[field.path]
 							td
 								a(href='#{field.$p.getRefModel().path}/#{row[field.path]._id}')=row[field.path].$pTitle
 						else

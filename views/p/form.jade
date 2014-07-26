@@ -54,6 +54,9 @@ mixin field_checkbox(field, name, det, widgetHTML)
 		if field.required
 			span.required-star *
 
+
+
+
 mixin display_field(field, name)
 	- var det = {}
 	- det.id = field.id? field.id : 'id_' + name
@@ -69,7 +72,7 @@ mixin display_field(field, name)
 	- if (formOpts.fieldClasses) det.fieldClasses += ' ' + formOpts.fieldClasses
 	- if (formOpts.usePlaceholder || field.usePlaceholder) {det.cssClasses += ' uses-placeholder'; widgetHTML=widgetHTML.replace('<input ', '<input placeholder="'+det.label+(field.required?'':'')+'" ')}
 	
-	- console.log(det, classes)
+	- //console.log(det, classes)
 	div(class=det.cssClasses)
 		if field.help_block
 			span.help-block=det.label
@@ -95,6 +98,11 @@ mixin display_field(field, name)
 		else if 'checkbox' == field.widget.type
 			div(class=det.fieldClasses)
 				+field_checkbox(field, name, det, widgetHTML)
+				+error(field, name, det)
+		else if 'file' == field.widget.type
+			+label(field, name, det)
+			div(class=det.fieldClasses)
+				input(id='#{det.id}', type='file', name=name)
 				+error(field, name, det)
 		else
 			+label(field, name, det)

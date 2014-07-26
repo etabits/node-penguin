@@ -5,7 +5,7 @@ querystring = require 'querystring'
 express = require 'express'
 mongoose = require 'mongoose'
 merge = require 'merge'
-
+async = require 'async'
 require 'mongoose-query-paginate'
 
 forms = require('forms')
@@ -13,9 +13,10 @@ fields = forms.fields
 validators = forms.validators
 widgets = forms.widgets
 
+fileManager = require './fileManager'
+widgets.file = fileManager.widget
+
 defaults = require './defaults'
-
-
 
 class Admin
 	self = null
@@ -29,6 +30,9 @@ class Admin
 			mountPath: @opts.mountPath
 		}
 		self._readModels @opts.modelsPath, (err, models)->
+			if self.opts.fileManager
+				models['files'] = require './modelFile'
+			#console.log models
 			self.models = models
 			for name, model of models
 				#self.models[model.modelName] = model
@@ -172,6 +176,14 @@ class Admin
 		return
 
 
+	getMulterMiddleware: ->
+		if not self.multerMiddleware
+			multer  = require('multer')
+			self.multerMiddleware = multer {
+				dest: './uploads/'
+			}
+
+		self.multerMiddleware
 
 	# ROUTES
 	setupRoutes: =>
@@ -183,9 +195,14 @@ class Admin
 			.put			@rNotImplemented		# CREATE
 
 		
+		postMiddlewares = []
+		if true
+			postMiddlewares.push @getMulterMiddleware()
+			postMiddlewares.push fileManager.prepareFilesMiddleware
+
 		@router.route('/:collection/:id')
 			.get			@rEdit					# EDIT
-			.post			@rEdit					# UPDATE
+			.post			postMiddlewares, @rEdit					# UPDATE
 			.delete			@rNotImplemented		# DELETE
 
 	rIndex: (req, res)=>
@@ -211,6 +228,7 @@ class Admin
 
 		#console.log 'Conditions:', conditions, 
 		query = req.model.obj.find(conditions)
+		#console.log 'fieldsToPopulate', req.model.fieldsToPopulate
 		query = query.populate(req.model.fieldsToPopulate.join(' '))
 		if req.query.sort
 			query = query.sort(req.query.sort)
@@ -221,6 +239,7 @@ class Admin
 		}
 		query.paginate paginationOptions, (err, result)->
 			console.log('ERR', err) if err
+			#console.log result.results
 
 			res.locals.getQueryString = (newObj)-> '?'+querystring.stringify merge(true, req.query, newObj)
 
@@ -238,6 +257,7 @@ class Admin
 		res.render path.resolve(__dirname, '../views/', template), locals
 
 	rEdit: (req, res)->
+
 		form = req.model.form
 		#console.log 'Row: ', req.row
 		renderObj = {
@@ -245,25 +265,37 @@ class Admin
 		}
 		form.handle req, {
 			success: (nform)->
+				dataToSet = {}
+				dataToSet[k]=v for k,v of nform.data
 
-				req.row[k]=v for k,v of nform.data
+				# Just unset the '' file fields from the data to be set in the row
+				for field in req.model.fields
+					if 'ObjectID' == field.instance && 'File' == field.options.ref && !dataToSet[field.path]
+						delete dataToSet[field.path]
+
+				req.row[k]=v for k,v of dataToSet
+
+				#return console.log '111',  nform.data, dataToSet, req.row
 
 				req.row.save (err, doc)->
+					#return console.log doc
 					if err
 						renderObj.form = nform
 						for fdName, error of err.errors
-							#console.log fdName, error
 							renderObj.form.fields[fdName].error = error.message
+						#console.log 'Error', err
 						self._render req, res, 'edit', renderObj
 					else
 						res.redirect './'
 
 
 			error: (nform)->
+				#console.log 'Form Error'
 				renderObj.form = nform
 				self._render req, res, 'edit', renderObj
 
 			empty: ()->
+				#console.log 'Form Empty'
 				#console.log req.row
 				
 				renderObj.form = form.bind(req.row)

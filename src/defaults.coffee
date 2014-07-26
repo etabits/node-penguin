@@ -7,6 +7,7 @@ d.opts = {
 	modelsPath:		path.resolve(process.cwd(), 'models')
 	mountPath:		'/admin'
 	indexTitle:		'Penguin Geese Admin'
+	fileManager:	false
 }
 d.model$p = {
 	fields: []
