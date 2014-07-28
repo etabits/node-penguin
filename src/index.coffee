@@ -107,8 +107,10 @@ class Admin
 			return if fieldOpts.hide
 			details.$p = fieldOpts
 			ret.fields.push(details)
+			# Instantiate a new field
 			formFields[name] = fields[fieldOpts.type] {
 				widget: widgets[fieldOpts.widget]()
+				$pField: details
 			}
 			if 'ObjectID' == details.instance && 'undefined' != typeof details.options.ref
 				ret.fieldsToPopulate.push name
@@ -169,7 +171,9 @@ class Admin
 
 	pId: (req, res, next)->
 		return res.send(404) if not req.params.id.match /^[0-9a-f]{24}$/
-		req.model.obj.findById req.params.id, (err, doc)->
+		query = req.model.obj.findById(req.params.id)
+		query = query.populate req.model.fieldsToPopulate.join(' ')
+		query.exec (err, doc)->
 
 			req.row = doc
 			return next()

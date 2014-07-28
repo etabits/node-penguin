@@ -102,9 +102,16 @@ mixin display_field(field, name)
 		else if 'file' == field.widget.type
 			+label(field, name, det)
 			div(class=det.fieldClasses)
-				input(id='#{det.id}', type='file', name=name)
+				input(id=det.id, type='file', name=name)
 				+error(field, name, det)
+		else if 'ObjectID' == field.$pField.instance && 'text' == field.widget.type
+			+label(field, name, det)
+			div(class=det.fieldClasses)
+				input.form-control(type='text', id=det.id, name='#{name}_label', value=field.value? field.value.$pTitle : '')
+				input(id="#{det.id}_id", type='hidden', name=name, value=field.value? field.value._id.toString(): '')
+
 		else
+			//- console.log (field.$pField)
 			+label(field, name, det)
 			div(class=det.fieldClasses)
 				if field.required 
