@@ -111,12 +111,26 @@ class Admin
 			details.$p = fieldOpts
 			ret.fields.push(details)
 			# Instantiate a new field
-			formFields[name] = fields[fieldOpts.type] {
+			details.$p.formField = formFields[name] = fields[fieldOpts.type] {
 				widget: widgets[fieldOpts.widget]()
 				$pField: details
 			}
+
 			if 'ObjectID' == details.instance && 'undefined' != typeof details.options.ref
 				ret.fieldsToPopulate.push name
+				if 'select' == details.$p.widget
+					getSelectOptions = (done)->
+						#console.log arguments
+						fieldOpts.getRefModel().obj.find (err, docs)->
+							listOptions = {}
+							listOptions[doc._id] = doc.$pTitle for doc in docs
+							formFields[name].choices = listOptions
+							#console.log formFields[name]
+							done()
+
+					details.$p.tasks.push getSelectOptions
+					#console.log details.$p.tasks
+
 
 		ret.form = forms.create formFields
 		ret
@@ -280,60 +294,70 @@ class Admin
 		renderObj = {
 			formOpts: {}
 		}
-		#console.log req.body
-		form.handle req, {
-			success: (nform)->
-				if addMode
-					req.row = new req.model.obj
+		tasks = []
+		#console.log form.fields
+		for field in req.model.fields
+			tasks = tasks.concat field.$p.tasks
+		
+		async.parallel tasks, ()->
+			# An ugly hack, but apparently forms.create copy objects
+			for field in req.model.fields
+				form.fields[field.path].choices = field.$p.formField.choices if field.$p.formField.choices
 
-				dataToSet = {}
-				dataToSet[k]=v for k,v of nform.data
+			#console.log req.body
+			form.handle req, {
+				success: (nform)->
+					if addMode
+						req.row = new req.model.obj
 
-				# Just unset the '' file fields from the data to be set in the row
-				for field in req.model.fields
-					if 'ObjectID' == field.instance && 'File' == field.options.ref && !dataToSet[field.path]
-						delete dataToSet[field.path]
+					dataToSet = {}
+					dataToSet[k]=v for k,v of nform.data
 
-				# Also set the conditions as field values
-				if addMode
-					dataToSet[k] = v for k, v of req.model.conditions
-					#return res.send 'WIP'
+					# Just unset the '' file fields from the data to be set in the row
+					for field in req.model.fields
+						if 'ObjectID' == field.instance && 'File' == field.options.ref && !dataToSet[field.path]
+							delete dataToSet[field.path]
 
-				req.row[k]=v for k,v of dataToSet
+					# Also set the conditions as field values
+					if addMode
+						dataToSet[k] = v for k, v of req.model.conditions
+						#return res.send 'WIP'
 
-				#return console.log '111',  nform.data, dataToSet, req.row
+					req.row[k]=v for k,v of dataToSet
 
-				req.row.save (err, doc)->
-					#return console.log doc
-					if err
-						#console.log 'Error', err, err.errors
-						renderObj.form = nform
-						if err.errors # Need to have a closer look at this...
-							for fdName, error of err.errors
-								renderObj.form.fields[fdName].error = error.message
+					#return console.log '111',  nform.data, dataToSet, req.row
+
+					req.row.save (err, doc)->
+						#return console.log doc
+						if err
+							#console.log 'Error', err, err.errors
+							renderObj.form = nform
+							if err.errors # Need to have a closer look at this...
+								for fdName, error of err.errors
+									renderObj.form.fields[fdName].error = error.message
+							else
+								renderObj.form.fields[err.path].error = err.message
+							self._render req, res, 'edit', renderObj
 						else
-							renderObj.form.fields[err.path].error = err.message
-						self._render req, res, 'edit', renderObj
+							res.redirect './'
+
+
+				error: (nform)->
+					#console.log 'Form Error'
+					renderObj.form = nform
+					self._render req, res, 'edit', renderObj
+
+				empty: ()->
+					#console.log 'Form Empty'
+					#console.log req.row
+					
+					if addMode
+						renderObj.form = form
 					else
-						res.redirect './'
+						renderObj.form = form.bind(req.row)
+					self._render req, res, 'edit', renderObj
 
-
-			error: (nform)->
-				#console.log 'Form Error'
-				renderObj.form = nform
-				self._render req, res, 'edit', renderObj
-
-			empty: ()->
-				#console.log 'Form Empty'
-				#console.log req.row
-				
-				if addMode
-					renderObj.form = form
-				else
-					renderObj.form = form.bind(req.row)
-				self._render req, res, 'edit', renderObj
-
-		}
+			}
 
 
 

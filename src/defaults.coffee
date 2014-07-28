@@ -23,6 +23,7 @@ d.field$p = {
 	widget: 'text'
 	hide: false
 	display: 'le'	#list, edit
+	tasks: []
 }
 d.typesMap = { # constructor / widget
 	String:		['string', 'text']

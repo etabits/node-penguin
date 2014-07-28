@@ -11,18 +11,21 @@ mixin error(field, name, det)
 		.alert.alert-danger.form-error-tooltip=t(field.error)
 
 mixin field_select(field, name, det)
+	- console.log(field)
 	- var source = field.choices
 	- //console.log (field)
 	- if (field.choices_ar && 'ar'==lang) source = field.choices_ar
+	- var value = field.value
+	- if (value._id) value = value._id.toString()
 	select.form-control(id=det.id, name=name)
 		- //console.log (field)
 		option(value=field._pleaseSelectValue?field._pleaseSelectValue:'')=t('Please select')
 		if source.length
 			each v in source
-				option(value=v, selected=v===field.value)= t(v)
+				option(value=v, selected=v===value)= t(v)
 		else
 			for l, v in source
-				option(value=v, selected=v===field.value)= t(l)
+				option(value=v, selected=v===value)= t(l)
 
 mixin field_radios(field, name, det)
 	- var optionClasses = 'inner-label'
