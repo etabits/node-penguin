@@ -128,6 +128,9 @@ class Admin
 
 		if 'ObjectID' == field.instance
 			fieldOpts.getRefModel = ()-> self.modelDetails[mongoose.models[field.options.ref].collection.name]
+			# Automatically give the file widget for ref:File ObjectId fields
+			if 'File' == field.options.ref
+				fieldOpts.widget = 'file'
 
 		merge true, def, fieldOpts
 
