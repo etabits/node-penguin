@@ -16,7 +16,7 @@ mixin field_select(field, name, det)
 	- //console.log (field)
 	- if (field.choices_ar && 'ar'==lang) source = field.choices_ar
 	- var value = field.value
-	- if (value._id) value = value._id.toString()
+	- if (value && value._id && value._id.toString) value = value._id.toString()
 	select.form-control(id=det.id, name=name)
 		- //console.log (field)
 		option(value=field._pleaseSelectValue?field._pleaseSelectValue:'')=t('Please select')
