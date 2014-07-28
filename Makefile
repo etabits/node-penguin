@@ -16,10 +16,15 @@ FLATUI_OUTPUT = $(STATICS_PATH)/20-flatui.css
 FLATUI_JS_OUTPUT = $(STATICS_PATH)/00-all.js
 
 
+
 node_modules/express:
 	ln -s ../example/node_modules/express	node_modules/express
 	ln -s ../example/node_modules/mongoose	node_modules/mongoose
 
 example-run: node_modules/express
 	-rm -fr example/uploads
-	cd example/ && npm install && coffee seed.coffee && supervisor -e 'jade|coffee|js|json' -i ../views -w ../ -x coffee -n error -- server.coffee
+	cd example/ && npm install && coffee seed.coffee && supervisor -e 'jade|coffee|js|json' -i ../views,../statics -w ../ -x coffee -n error -- server.coffee
+
+download-libs:
+	wget -O statics/js/30-moment.js http://momentjs.com/downloads/moment.js
+	wget -O statics/js/31-combodate.js https://raw.githubusercontent.com/vitalets/combodate/master/combodate.js

@@ -65,6 +65,8 @@ class Admin
 			js: [
 				"#{@opts.staticsPath}/js/10-jquery.js"
 				"#{@opts.staticsPath}/js/20-bootstrap.js"
+				"#{@opts.staticsPath}/js/30-moment.js"
+				"#{@opts.staticsPath}/js/31-combodate.js"
 				"#{@opts.staticsPath}/js/90-penguin.js"
 			]
 		}

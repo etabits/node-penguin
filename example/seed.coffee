@@ -7,9 +7,9 @@ mongoose.connect('mongodb://localhost/penguin')
 IDs = [mongoose.Types.ObjectId(), mongoose.Types.ObjectId()]
 Seeds = {
 	Node: [
-		{type: 'p', user: IDs[0], title: 'About', content: 'We are simple the best, and the most humble, there is...'}
-		{type: 'p', user: IDs[1], title: 'History', content: 'Since the big bang...'}
-		{type: 'a', user: IDs[0], title: 'Welcome', content: 'Welcome to our new home...'}
+		{type: 'p', user: IDs[0], date: new Date(), title: 'About', content: 'We are simple the best, and the most humble, there is...'}
+		{type: 'p', user: IDs[1], date: new Date(), title: 'History', content: 'Since the big bang...'}
+		{type: 'a', user: IDs[0], date: new Date(), title: 'Welcome', content: 'Welcome to our new home...'}
 	]
 	User: [
 		{_id: IDs[0], username: 'Master', email: 'master@example.org', password: 'plaintextpass', isAdmin: true}
@@ -23,6 +23,7 @@ for c in [1..1]
 		user: IDs[0]
 		title:"Article #{c}"
 		content: "Content for article #{c}"
+		date: new Date()
 	}
 
 
@@ -40,8 +41,9 @@ for modelName of Seeds
 	require "./models/#{modelName.toLowerCase()}"
 	tasks.push createSeeder(modelName)
 
-async.parallel tasks, ()->
-		mongoose.disconnect()
+async.parallel tasks, (err)->
+	console.log('Error', err) if err
+	mongoose.disconnect()
 
 
 #Node.remove ()->

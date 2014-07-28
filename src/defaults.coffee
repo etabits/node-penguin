@@ -27,6 +27,7 @@ d.field$p = {
 d.typesMap = { # constructor / widget
 	String:		['string', 'text']
 	Boolean:	['boolean', 'checkbox']
+	Date:		['string', 'datetime']
 }
 
 module.exports = d
