@@ -12,6 +12,7 @@ forms = require('forms')
 fields = forms.fields
 validators = forms.validators
 widgets = forms.widgets
+merge widgets, require('./widgets')
 
 fileManager = require './fileManager'
 widgets.file = fileManager.widget
@@ -57,14 +58,14 @@ class Admin
 			null
 		self.resLocals.statics = {
 			css: [
-				"#{@opts.staticsPath}/10-bootstrap.css"
-				"#{@opts.staticsPath}/20-flatui.css"
-				"#{@opts.staticsPath}/50-penguin.css"
+				"#{@opts.staticsPath}/css/10-bootstrap.css"
+				"#{@opts.staticsPath}/css/20-flatui.css"
+				"#{@opts.staticsPath}/css/50-penguin.css"
 			]
 			js: [
-				"#{@opts.staticsPath}/10-jquery.js"
-				"#{@opts.staticsPath}/20-bootstrap.js"
-				"#{@opts.staticsPath}/90-penguin.js"
+				"#{@opts.staticsPath}/js/10-jquery.js"
+				"#{@opts.staticsPath}/js/20-bootstrap.js"
+				"#{@opts.staticsPath}/js/90-penguin.js"
 			]
 		}
 		null
