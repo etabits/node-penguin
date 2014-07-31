@@ -6,7 +6,7 @@ Automatically generates administration pages based on your Mongoose models.
 For basic use, you don't have to alter anything in your mongoose models definition, Penguin will read the definition and automagically create edit/add forms, in addition to a basic listing.
 
 ## Live example
-Check [penguadmin.herokuapp.com/admin/](http://penguadmin.herokuapp.com/admin/).
+Check [penguin.etabits.com/admin/](http://penguin.etabits.com/admin/).
 
 ## Usage
 In your app:
