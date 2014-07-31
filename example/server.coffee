@@ -6,8 +6,9 @@ express = require('express')
 
 mongoose = require ('mongoose')
 
-
-mongoose.connect('mongodb://localhost/penguin')
+mongoConnectionString = process.env.MONGO_URL || 'mongodb://localhost/penguin'
+#console.log 'Connecting to ', mongoConnectionString
+mongoose.connect mongoConnectionString
 
 
 

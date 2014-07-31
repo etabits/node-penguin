@@ -1,7 +1,8 @@
 mongoose = require ('mongoose')
 async = require 'async'
 
-mongoose.connect('mongodb://localhost/penguin')
+mongoConnectionString = process.env.MONGO_URL || 'mongodb://localhost/penguin'
+mongoose.connect mongoConnectionString
 
 
 IDs = [mongoose.Types.ObjectId(), mongoose.Types.ObjectId()]
