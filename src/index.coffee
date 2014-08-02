@@ -74,11 +74,14 @@ class Admin
 
 	_readModels: (path, done)->
 		fs.readdir path, (err, files)->
-			return done(err) if err
-			models = {}
+
 			for f in files
-				model = require "#{path}/#{f}" 
+				require "#{path}/#{f}" 
+
+			models = {}
+			for modelName, model of mongoose.models
 				models[model.collection.name] = model
+
 			return done(null, models)
 
 			
