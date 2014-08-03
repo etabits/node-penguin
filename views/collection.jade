@@ -14,7 +14,7 @@ block content
 			button.btn.btn-primary(type="submit") Search!
 
 
-	table.table.table-striped.table-hover
+	table.table.table-striped.table-hover.table-condensed
 		thead
 			tr
 				th #
@@ -36,12 +36,16 @@ block content
 					td
 						a(href='#{model.path}/#{row.id}') Edit
 					each field in model.fields
+						- var fieldValue = row[field.path]
 						- if (-1 == field.$p.display.indexOf('l')) continue;
-						if 'ObjectID' == field.instance && row[field.path]
+						if 'ObjectID' == field.instance && fieldValue
 							td
-								a(href='#{field.$p.getRefModel().path}/#{row[field.path]._id}')=row[field.path].$pTitle
+								a(href='#{field.$p.getRefModel().path}/#{fieldValue._id}')=fieldValue.$pTitle
+						else if fieldValue instanceof Date
+							td(title=fieldValue)=fieldValue.toISOString().substr(0, 19).replace('T', ' ')
 						else
-							td=row[field.path]
+							- console.log (field.options.type.name)
+							td=fieldValue
 
 	hr
 	p: em Displaying records 
