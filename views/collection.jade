@@ -32,10 +32,9 @@ block content
 
 		tbody
 			each row in docs
-				- var id = row._id.toString()
-				tr(data-id=)
+				tr(data-id=row.id, class=row.$pTableRowClass)
 					td
-						a(href='#{model.path}/#{id}') Edit
+						a(href='#{model.path}/#{row.id}') Edit
 					each field in model.fields
 						- if (-1 == field.$p.display.indexOf('l')) continue;
 						if 'ObjectID' == field.instance && row[field.path]

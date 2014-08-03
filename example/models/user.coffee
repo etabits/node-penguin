@@ -9,6 +9,7 @@ userSchema  = mongoose.Schema {
 }
 
 userSchema.virtual('$pTitle').get ()-> this.username
+userSchema.virtual('$pTableRowClass').get ()-> if this.isAdmin then 'info' else null
 
 User = mongoose.model('User', userSchema)
 module.exports = User
