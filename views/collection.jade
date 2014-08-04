@@ -44,7 +44,7 @@ block content
 						else if fieldValue instanceof Date
 							td(title=fieldValue)=fieldValue.toISOString().substr(0, 19).replace('T', ' ')
 						else
-							- console.log (field.options.type.name)
+							//- console.log (field.options.type.name)
 							td=fieldValue
 
 	hr

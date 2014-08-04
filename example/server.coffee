@@ -80,6 +80,18 @@ admin = new penguin.Admin {
 		}
 	}
 
+	# Automatically built by default!
+	menu: [
+		[ 'Administration Home', '/admin' ]
+		[ 'Sections', [
+			#[ 'Files', '/admin/files' ]
+			[ 'Articles', '/admin/articles' ]
+			#[ 'Nodes', '/admin/nodes' ]
+			[ 'Pages', '/admin/pages' ]
+			[ 'Users', '/admin/users' ]
+		] ]
+	]
+
 
 	preMiddleware: (req, res, next)->
 		#return if -1 != req.headers['user-agent'].indexOf('Firefox') then next() else res.redirect '/'

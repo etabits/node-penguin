@@ -1,0 +1,14 @@
+mixin menu(items, classes)
+	ul(class=classes)
+		each item in items
+			if 'string' == typeof item[1]
+				li
+					a(href=item[1])=item[0]
+			else
+				li.dropdown
+					a.dropdown-toggle(data-toggle="dropdown", href='#')
+						=item[0]
+						span.caret
+					span.dropdown-arrow
+						
+					+menu(item[1], 'dropdown-menu')

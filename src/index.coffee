@@ -53,8 +53,20 @@ class Admin
 
 
 				self.modelDetails[vModel.slug] = self.getModelDetails vModel
+			if not self.opts.menu
+				self.opts.menu = [
+					['Administration Home', self.opts.mountPath]
+					['Sections', []]
+				]
+				for modelName, model of self.modelDetails
+					continue if model.hide
+					self.opts.menu[1][1].push [model.label, "#{self.opts.mountPath}/#{model.slug}"]
+
 
 			self.resLocals.models = self.modelDetails
+			self.resLocals.menus = {
+				main: self.opts.menu
+			}
 			null
 		self.resLocals.statics = {
 			css: [
@@ -287,6 +299,7 @@ class Admin
 		return res.send('Not Implemented')
 
 	_render: (req, res, template, locals) =>
+
 		res.render path.resolve(__dirname, '../views/', template), locals
 
 	rEdit: (req, res)->
