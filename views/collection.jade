@@ -14,10 +14,10 @@ block content
 			button.btn.btn-primary(type="submit") Search!
 
 
-	table.table.table-striped.table-hover.table-condensed
+	table.table.table-hover.table-condensed
 		thead
 			tr
-				th #
+				th: input(type='checkbox')
 				each field in model.fields
 					if -1 != field.$p.display.indexOf('l')
 						th
@@ -29,12 +29,15 @@ block content
 								- sortParam = ''
 								| &dArr;
 							a(href=getQueryString({sort:sortParam}))=t(field.path)
+				if model.rowActions.length
+					th &nbsp;
 
 		tbody
 			each row in docs
 				tr(data-id=row.id, class=row.$pTableRowClass)
 					td
-						a(href='#{model.path}/#{row.id}') Edit
+						input(type='checkbox')
+						a.btn.btn-link(href='#{model.path}/#{row.id}') Edit
 					each field in model.fields
 						- var fieldValue = row[field.path]
 						- if (-1 == field.$p.display.indexOf('l')) continue;
@@ -46,6 +49,24 @@ block content
 						else
 							//- console.log (field.options.type.name)
 							td=fieldValue
+					if model.rowActions.length
+						td
+							each actionName in model.rowActions
+								- var action = model.actions[actionName], display = true
+								- if (action.displaysFor) display = action.displaysFor(row)
+								if display
+									button.btn.btn-link(data-action=actionName)=t(actionName)
+
+	hr
+	if model.pageActions.length
+		.page-actions With Selected: 
+			each actionName in model.pageActions
+				- var action = model.actions[actionName]
+				button.btn.btn-primary.btn-sm(data-action=actionName)=t(actionName)
+				|  
+
+
+
 
 	hr
 	p: em Displaying records 

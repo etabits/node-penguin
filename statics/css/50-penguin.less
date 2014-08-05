@@ -10,4 +10,22 @@ table {
 			}
 		}
 	}
+	tbody {
+		tr {
+			td:first-child {
+				.btn {
+					margin-left: 10px;
+				}
+			}
+			.btn {
+				padding: 2px 5px;
+			}
+		}
+		tr:nth-child(even) {
+			background: #eee;
+		}
+		tr.selected {
+			background: #dee !important;
+		}
+	}
 }

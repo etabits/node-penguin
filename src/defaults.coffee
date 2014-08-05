@@ -14,6 +14,9 @@ d.model$p = {
 	conditions: {}
 	hide: false
 	fieldsToPopulate: []
+	actions: {}
+	rowActions: []
+	pageActions: []
 }
 d.model$pOverrides = {
 	hide: false

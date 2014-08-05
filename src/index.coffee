@@ -19,6 +19,8 @@ widgets.file = fileManager.widget
 
 defaults = require './defaults'
 
+bodyParser = require('body-parser').urlencoded({ extended: false })
+
 class Admin
 	self = null
 	constructor: (@opts={}) ->
@@ -232,7 +234,7 @@ class Admin
 
 		@router.route('/:collection')
 			.get			@rCollection			# LIST
-			.put			@rNotImplemented		# CREATE
+			.post			bodyParser, @rCollectionPOST		# Actions
 
 		
 		postMiddlewares = []
@@ -253,6 +255,19 @@ class Admin
 	rIndex: (req, res)=>
 		self._render req, res, 'index', {title: @opts.indexTitle}
 		#return res.send 'hello!'
+
+	rCollectionPOST: (req, res, next)->
+		if 'action' == req.body.type
+			req.body.ids = req.body.ids.split(',')
+			#return console.log req.body
+			action = req.model.actions[req.body.action]
+			return next() if not action
+			action.apply {_id: $in: req.body.ids}, {req: req}, (err)->
+				return next(err) if err
+				res.redirect ''
+
+		else return next()
+		#console.log req.body
 
 	rCollection: (req, res)=>
 		conditions = merge true, req.model.conditions
@@ -379,4 +394,5 @@ class Admin
 
 module.exports = {
 	Admin: Admin
+	utils: require('./utils')
 }

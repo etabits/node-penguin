@@ -8,9 +8,9 @@ mongoose.connect mongoConnectionString
 IDs = [mongoose.Types.ObjectId(), mongoose.Types.ObjectId()]
 Seeds = {
 	Node: [
-		{type: 'p', user: IDs[0], date: new Date(), title: 'About', content: 'We are simple the best, and the most humble, there is...'}
-		{type: 'p', user: IDs[1], date: new Date(), title: 'History', content: 'Since the big bang...'}
-		{type: 'a', user: IDs[0], date: new Date(), title: 'Welcome', content: 'Welcome to our new home...'}
+		{type: 'p', published: true, user: IDs[0], date: new Date(), title: 'About', content: 'We are simple the best, and the most humble, there is...'}
+		{type: 'p', published: false,user: IDs[1], date: new Date(), title: 'History', content: 'Since the big bang...'}
+		{type: 'a', published: true, user: IDs[0], date: new Date(), title: 'Welcome', content: 'Welcome to our new home...'}
 	]
 	User: [
 		{_id: IDs[0], username: 'Master', email: 'master@example.org', password: 'plaintextpass', isAdmin: true}
@@ -25,6 +25,7 @@ for c in [1..1]
 		title:"Article #{c}"
 		content: "Content for article #{c}"
 		date: new Date()
+		published: false
 	}
 
 
