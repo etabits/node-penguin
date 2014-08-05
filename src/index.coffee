@@ -151,7 +151,7 @@ class Admin
 		ret
 
 	getDefaultFieldOpts: (field)->
-		def = defaults.field$p
+		def = merge true, defaults.field$p
 		fieldOpts = merge true, field.options.$p
 		#console.log field.options.type.name
 		if not fieldOpts.type && 'undefined' != typeof defaults.typesMap[field.options.type.name]
