@@ -50,3 +50,12 @@ $ ()->
 			ids: ids.get().join()
 		}
 
+
+	$('.set-actions button[data-action]').click ()->
+
+		createAndSubmitForm {
+			type: 'action'
+			action: $(this).attr('data-action')
+			scope: 'set'
+		}
+

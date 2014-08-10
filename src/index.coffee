@@ -20,6 +20,7 @@ widgets.file = fileManager.widget
 defaults = require './defaults'
 
 commonActions = require './actions'
+utils = require('./utils')
 
 bodyParser = require('body-parser').urlencoded({ extended: false })
 
@@ -238,7 +239,7 @@ class Admin
 
 		@router.route('/:collection')
 			.get			@rCollection			# LIST
-			.post			bodyParser, @rCollectionPOST		# Actions
+			.post			bodyParser, @rCollectionPOST	# Actions
 
 		
 		postMiddlewares = []
@@ -262,11 +263,16 @@ class Admin
 
 	rCollectionPOST: (req, res, next)->
 		if 'action' == req.body.type
-			req.body.ids = req.body.ids.split(',')
-			#return console.log req.body
+			conditions = {}
+			if req.body.scope == 'set'
+				console.log 'N'
+			else
+				req.body.ids = req.body.ids.split(',')
+				conditions._id = {$in: req.body.ids}
+
 			action = req.model.actions[req.body.action]
 			return next() if not action
-			action.apply {_id: $in: req.body.ids}, {req: req, model: req.model}, (err)->
+			action.apply conditions, {req: req, model: req.model, res: res}, (err)->
 				return next(err) if err
 				res.redirect ''
 
@@ -274,30 +280,10 @@ class Admin
 		#console.log req.body
 
 	rCollection: (req, res)=>
-		conditions = merge true, req.model.conditions
-		#console.log req.model.fieldsToPopulate
-		if req.query.q
-			rx = new RegExp(req.query.q, 'i')
-			$orConditions = []
-			for f in req.model.fields
-				continue if 'String'!=f.instance
-				#console.log f.instance, f.path
-				continue if conditions[f.path]
-				c = {}
-				c[f.path] = rx
-				$orConditions.push c
-			if $orConditions.length
-				conditions.$or = $orConditions
-			#console.log 'or conditions', $orConditions
 
-		#console.log 'Conditions:', conditions, 
-		query = req.model.obj.find(conditions)
+		query = utils.createMongoQueryFromRequest(req)
 		#console.log 'fieldsToPopulate', req.model.fieldsToPopulate
 		query = query.populate(req.model.fieldsToPopulate.join(' '))
-		if req.query.sort
-			query = query.sort(req.query.sort)
-		else
-			query = query.sort(req.model.sort)
 
 		paginationOptions = {
 			perPage: req.model.itemsPerPage
@@ -401,5 +387,5 @@ class Admin
 
 module.exports = {
 	Admin: Admin
-	utils: require('./utils')
+	utils: utils
 }

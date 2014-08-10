@@ -25,6 +25,7 @@ Model.$p = {
 	}
 	rowActions:  ['publish', 'unpublish']
 	pageActions: ['_delete', 'publish', 'unpublish']
+	setActions: ['_export_csv']
 	sort: 'title'
 	itemsPerPage: 50
 }

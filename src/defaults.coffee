@@ -17,6 +17,7 @@ d.model$p = {
 	actions: {}
 	rowActions: []
 	pageActions: ['_delete']
+	setActions: []
 	sort:		'-_id'
 	itemsPerPage: 25
 }

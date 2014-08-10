@@ -12,3 +12,14 @@ mixin menu(items, classes)
 					span.dropdown-arrow
 						
 					+menu(item[1], 'dropdown-menu')
+
+mixin displayActions(actions, opts)
+	- opts = opts || {}
+	each actionName in actions
+		- var action = model.actions[actionName]
+		- var display = true
+		- if (opts.displayCB)
+			- display = opts.displayCB(action)
+
+		if display
+			button.btn.btn-primary.btn-sm(data-action=actionName)=t(actionName)

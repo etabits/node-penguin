@@ -18,13 +18,14 @@ Seeds = {
 	]
 }
 
+now = Date.now()
 for c in [1..100]
 	Seeds.Node.push {
 		type: 'a'
 		user: IDs[0]
 		title:"Article #{c}"
 		content: "Content for article #{c}"
-		date: new Date()
+		date: new Date(now+1000*c)
 		published: false
 	}
 

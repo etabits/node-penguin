@@ -1,4 +1,5 @@
 extends layout
+include p/mixins
 
 block content
 	a.pull-left.btn.btn-primary(href='#{model.path}/add') Add a New #{model.label.replace(/s$/, '')}...
@@ -51,36 +52,35 @@ block content
 							td=fieldValue
 					if model.rowActions.length
 						td
-							each actionName in model.rowActions
-								- var action = model.actions[actionName], display = true
-								- if (action.displaysFor) display = action.displaysFor(row)
-								if display
-									button.btn.btn-link(data-action=actionName)=t(actionName)
+							+displayActions(model.rowActions, {displayCB: function(action){return (!action.displaysFor) || action.displaysFor(row);}})
 
-	hr
+
 	if model.pageActions.length
-		.page-actions With Selected: 
-			each actionName in model.pageActions
-				- var action = model.actions[actionName]
-				button.btn.btn-primary.btn-sm(data-action=actionName)=t(actionName)
-				|  
+		hr
+		.page-actions With Selected:
+			+displayActions(model.pageActions)
 
 
 
 
 	hr
-	p: em Displaying records 
-		=(pagination.current-1)*pagination.options.perPage+1
-		|  to 
-		=(pagination.current-1)*pagination.options.perPage+docs.length
-		|  out of 
-		=pagination.count
-		|  total documents.
-	ul.pagination
-		li
-			a(href=getQueryString({p:1})) &laquo;
-		each pNumber in pagination.pages
-			li(class=(pNumber==pagination.current)?'active':'')
-				a(href=getQueryString({p:pNumber}))=pNumber
-		li
-			a(href=getQueryString({p:pagination.last})) &raquo;
+	.clearfix
+		.pull-left
+			p: em Displaying records 
+				=(pagination.current-1)*pagination.options.perPage+1
+				|  to 
+				=(pagination.current-1)*pagination.options.perPage+docs.length
+				|  out of 
+				=pagination.count
+				|  total documents.
+			ul.pagination
+				li
+					a(href=getQueryString({p:1})) &laquo;
+				each pNumber in pagination.pages
+					li(class=(pNumber==pagination.current)?'active':'')
+						a(href=getQueryString({p:pNumber}))=pNumber
+				li
+					a(href=getQueryString({p:pagination.last})) &raquo;
+		if model.setActions.length
+			.pull-right.set-actions
+				+displayActions(model.setActions)
