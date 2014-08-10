@@ -292,8 +292,11 @@ class Admin
 		query = query.populate(req.model.fieldsToPopulate.join(' '))
 		if req.query.sort
 			query = query.sort(req.query.sort)
+		else
+			query = query.sort(req.model.sort)
+
 		paginationOptions = {
-			perPage: 25
+			perPage: req.model.itemsPerPage
 			delta  : 3
 			page   : req.query.p
 		}

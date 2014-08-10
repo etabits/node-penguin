@@ -17,6 +17,8 @@ d.model$p = {
 	actions: {}
 	rowActions: []
 	pageActions: []
+	sort:		'-_id'
+	itemsPerPage: 25
 }
 d.model$pOverrides = {
 	hide: false

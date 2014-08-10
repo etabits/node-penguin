@@ -25,6 +25,8 @@ Model.$p = {
 	}
 	rowActions:  ['publish', 'unpublish']
 	pageActions: ['publish', 'unpublish']
+	sort: 'title'
+	itemsPerPage: 50
 }
 
 module.exports = Model
