@@ -19,6 +19,8 @@ widgets.file = fileManager.widget
 
 defaults = require './defaults'
 
+commonActions = require './actions'
+
 bodyParser = require('body-parser').urlencoded({ extended: false })
 
 class Admin
@@ -114,6 +116,8 @@ class Admin
 			}, vModel, {
 				obj: model
 			}
+		ret.actions = merge true, commonActions, ret.actions
+
 		#console.log vModel.slug, defaults.model$p, model.$p, defaults.model$pOverrides, vModel
 
 		#console.log '>>>', defaults.vModel
@@ -262,7 +266,7 @@ class Admin
 			#return console.log req.body
 			action = req.model.actions[req.body.action]
 			return next() if not action
-			action.apply {_id: $in: req.body.ids}, {req: req}, (err)->
+			action.apply {_id: $in: req.body.ids}, {req: req, model: req.model}, (err)->
 				return next(err) if err
 				res.redirect ''
 

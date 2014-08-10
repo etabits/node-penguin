@@ -16,7 +16,7 @@ d.model$p = {
 	fieldsToPopulate: []
 	actions: {}
 	rowActions: []
-	pageActions: []
+	pageActions: ['_delete']
 	sort:		'-_id'
 	itemsPerPage: 25
 }

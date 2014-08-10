@@ -24,7 +24,7 @@ Model.$p = {
 		unpublish: penguin.utils.createSimpleAction {published: false}
 	}
 	rowActions:  ['publish', 'unpublish']
-	pageActions: ['publish', 'unpublish']
+	pageActions: ['_delete', 'publish', 'unpublish']
 	sort: 'title'
 	itemsPerPage: 50
 }
