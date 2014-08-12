@@ -274,7 +274,8 @@ class Admin
 			return next() if not action
 			action.apply conditions, {req: req, model: req.model, res: res}, (err)->
 				return next(err) if err
-				res.redirect ''
+				# Chrome wouldn't interpret '' as a redirect to the same location
+				res.redirect self.opts.mountPath + req.url
 
 		else return next()
 		#console.log req.body
