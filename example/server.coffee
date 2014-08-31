@@ -80,6 +80,14 @@ admin = new penguin.Admin {
 		}
 	}
 
+	# extra html in the menu bar
+	menuExtraHTML: '
+		<ul class="nav navbar-nav navbar-right">
+			<li>
+				<a href="javascript:alert(\'Fake Logout link :)\')">Log Out</a>
+			</li>
+		</ul>'
+
 	# Automatically built by default!
 	menu: [
 		[ 'Administration Home', '/admin' ]

@@ -8,6 +8,7 @@ d.opts = {
 	mountPath:		'/admin'
 	indexTitle:		'Penguin Geese Admin'
 	fileManager:	false
+	menuExtraHTML:  '<!-- inside menu -->'
 }
 d.model$p = {
 	fields: []

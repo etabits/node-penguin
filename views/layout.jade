@@ -11,19 +11,7 @@ html
 	body
 		.navbar.navbar-inverse.navbar-embossed
 			+menu(menus.main, 'nav navbar-nav navbar-left')
-			//-ul.nav.navbar-nav.navbar-left
-				li
-					a(href=mountPath) Home
-				li.dropdown
-					a.dropdown-toggle(data-toggle="dropdown", href='#')
-						| Sections
-						span.caret
-					span.dropdown-arrow
-					ul.dropdown-menu(role=menu)
-						each model in models
-							if !model.hide
-								li
-									a(href='#{mountPath}/#{model.slug}')=model.label
+			!=menuExtraHTML
 
 
 		.container-fluid

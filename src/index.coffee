@@ -72,6 +72,7 @@ class Admin
 			self.resLocals.menus = {
 				main: self.opts.menu
 			}
+			self.resLocals.menuExtraHTML = self.opts.menuExtraHTML
 			null
 		self.resLocals.statics = {
 			css: [
@@ -308,7 +309,6 @@ class Admin
 		return res.send('Not Implemented')
 
 	_render: (req, res, template, locals) =>
-
 		res.render path.resolve(__dirname, '../views/', template), locals
 
 	rEdit: (req, res)->

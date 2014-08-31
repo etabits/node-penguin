@@ -11,7 +11,6 @@ mixin error(field, name, det)
 		.alert.alert-danger.form-error-tooltip=t(field.error)
 
 mixin field_select(field, name, det)
-	- console.log(field)
 	- var source = field.choices
 	- //console.log (field)
 	- if (field.choices_ar && 'ar'==lang) source = field.choices_ar
