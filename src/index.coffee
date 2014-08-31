@@ -134,9 +134,11 @@ class Admin
 			details.$p = fieldOpts
 			ret.fields.push(details)
 			# Instantiate a new field
+			details.$p.label ?= name
 			details.$p.formField = formFields[name] = fields[fieldOpts.type] {
 				widget: widgets[fieldOpts.widget]()
 				$pField: details
+				label: details.$p.label
 			}
 
 			if 'ObjectID' == details.instance && 'undefined' != typeof details.options.ref

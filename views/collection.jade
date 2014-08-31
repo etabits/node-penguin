@@ -29,7 +29,7 @@ block content
 							else if urlQuery.sort == '-'+field.path
 								- sortParam = ''
 								| &dArr;
-							a(href=getQueryString({sort:sortParam}))=t(field.path)
+							a(href=getQueryString({sort:sortParam}))=t(field.$p.label)
 				if model.rowActions.length
 					th &nbsp;
 

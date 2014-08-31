@@ -3,7 +3,7 @@ mongoose	= require('mongoose')
 
 userSchema  = mongoose.Schema {
 	username:		String
-	email:			String
+	email:			{type: String, $p: {label: 'E-Mail'}}
 	password:		{type: String, $p: {hide: true}}
 	isAdmin:		{type: Boolean}
 }
