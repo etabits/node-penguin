@@ -12,7 +12,7 @@ utils.createSimpleAction = (updateDoc)->
 	}
 
 utils.createMongoQueryFromRequest = (req)->
-	conditions = merge true, req.model.conditions
+	conditions = merge true, req.model.conditions, req.query.conditions
 
 	if req.query.q
 		rx = new RegExp(req.query.q, 'i')

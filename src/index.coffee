@@ -1,6 +1,6 @@
 fs = require 'fs'
 path = require 'path'
-querystring = require 'querystring'
+qs = require 'qs'
 
 express = require 'express'
 mongoose = require 'mongoose'
@@ -142,6 +142,7 @@ class Admin
 			}
 
 			if 'ObjectID' == details.instance && 'undefined' != typeof details.options.ref
+				#console.log 'ref: ', vModel.base, name, '->', details.options.ref
 				ret.fieldsToPopulate.push name
 				if 'select' == details.$p.widget
 					getSelectOptions = (done)->
@@ -298,7 +299,7 @@ class Admin
 			console.log('ERR', err) if err
 			#console.log result.results
 
-			res.locals.getQueryString = (newObj)-> '?'+querystring.stringify merge(true, req.query, newObj)
+			res.locals.getQueryString = (newObj)-> '?'+qs.stringify merge(true, req.query, newObj)
 
 			self._render req, res, 'collection', {
 				docs:	result.results
