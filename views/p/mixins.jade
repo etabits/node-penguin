@@ -16,10 +16,15 @@ mixin menu(items, classes)
 mixin displayActions(actions, opts)
 	- opts = opts || {}
 	each actionName in actions
-		- var action = model.actions[actionName]
-		- var display = true
-		- if (opts.displayCB)
-			- display = opts.displayCB(action)
+		if 'object' == typeof actionName
+			- var action = actionName
+			a(href=mountPath+action.href.replace('{$row.id}', opts.row.id))=action.label
 
-		if display
-			button.btn.btn-primary.btn-sm(data-action=actionName)=t(actionName)
+		else
+			- var action = model.actions[actionName]
+			- var display = true
+			- if (opts.displayCB)
+				- display = opts.displayCB(action)
+
+			if display
+				button.btn.btn-primary.btn-sm(data-action=actionName)=t(actionName)

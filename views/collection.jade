@@ -52,7 +52,7 @@ block content
 							td=fieldValue
 					if model.rowActions.length
 						td
-							+displayActions(model.rowActions, {displayCB: function(action){return (!action.displaysFor) || action.displaysFor(row);}})
+							+displayActions(model.rowActions, {row: row, displayCB: function(action){return (!action.displaysFor) || action.displaysFor(row);}})
 
 
 	if model.pageActions.length

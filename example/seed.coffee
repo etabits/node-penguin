@@ -22,7 +22,7 @@ now = Date.now()
 for c in [1..100]
 	Seeds.Node.push {
 		type: 'a'
-		user: IDs[0]
+		user: if Math.random()>0.5 then IDs[0] else IDs[1]
 		title:"Article #{c}"
 		content: "Content for article #{c}"
 		date: new Date(now+1000*c)
