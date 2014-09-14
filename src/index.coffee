@@ -312,7 +312,7 @@ class Admin
 		return res.send('Not Implemented')
 
 	_render: (req, res, template, locals) =>
-		res.render path.resolve(__dirname, '../views/', template), locals
+		res.render path.resolve(__dirname, '../views/', template + '.jade'), locals
 
 	rEdit: (req, res)->
 		addMode = !req.row
