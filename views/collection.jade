@@ -51,7 +51,7 @@ block content
 							//- console.log (field.options.type.name)
 							td=fieldValue
 					if model.rowActions.length
-						td
+						td.actions
 							+displayActions(model.rowActions, {row: row, displayCB: function(action){return (!action.displaysFor) || action.displaysFor(row);}})
 
 

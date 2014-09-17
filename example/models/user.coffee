@@ -19,6 +19,10 @@ User.$p = {
             label:  'Articles'
             href: '/articles?conditions[user]={$row.id}'
         }
+        {
+            label:  'Pages'
+            href: '/pages?conditions[user]={$row.id}'
+        }
     ]
 }
 
