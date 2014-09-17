@@ -133,16 +133,25 @@ mixin display_field(field, name)
 				if field.info_below
 					span.help-block=t(field.info_below)
 
-if formOpts.horizontal
-	- formOpts.labelClasses = 'col-xs-'+ formOpts.horizontal
-	- formOpts.fieldClasses = 'col-xs-'+ (12-formOpts.horizontal)
+mixin field_hidden(field, name, value)
+	input(type='hidden', name=name, value=value)
 
 
-if false !== formOpts.drawForm
-	each field, name in form.fields
-		- var span = field.span? field.span : 12
-		div(class='col-xs-#{span} field-container-#{field.name}')
-			- //console.log(field); break
-			+display_field(field, name)
+mixin form(form, formOpts)
+	- formOpts.valueOverrides = formOpts.valueOverrides || {}
+	if formOpts.horizontal
+		- formOpts.labelClasses = 'col-xs-'+ formOpts.horizontal
+		- formOpts.fieldClasses = 'col-xs-'+ (12-formOpts.horizontal)
+
+
+	if false !== formOpts.drawForm
+		each field, name in form.fields
+			if formOpts.valueOverrides[name]
+				+field_hidden(field, name, formOpts.valueOverrides[name])
+			else
+				- var span = field.span? field.span : 12
+				div(class='col-xs-#{span} field-container-#{field.name}')
+					- //console.log(field); break
+					+display_field(field, name)
 
 

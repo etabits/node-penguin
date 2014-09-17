@@ -301,7 +301,7 @@ class Admin
 			console.log('ERR', err) if err
 			#console.log result.results
 
-			res.locals.getQueryString = (newObj)-> '?'+qs.stringify merge(true, req.query, newObj)
+			res.locals.getQueryString = (newObj)-> self._getQueryString(req, newObj)
 
 			self._render req, res, 'collection', {
 				docs:	result.results
@@ -310,20 +310,37 @@ class Admin
 				pagination: result
 			}
 
+	_getQueryString: (req, newObj)->
+		'?'+qs.stringify merge(true, req.query, newObj)
+
 	rNotImplemented: (req, res)=>
 		return res.send('Not Implemented')
 
 	_render: (req, res, template, locals) =>
 		res.render self.opts.templatesPath.replace('%s', template), locals
 
+
+	_rEditEmpty: (req, res)->
+		console.log 'Form Empty'
+		#console.log req.row
+		
+		if req.$p.addMode
+			req.$p.renderObj.form = req.$p.form
+		else
+			req.$p.renderObj.form = req.$p.form.bind(req.row)
+		self._render req, res, 'edit', req.$p.renderObj
+
 	rEdit: (req, res)->
-		addMode = !req.row
-		form = req.model.form
+		req.$p = {}
+		req.$p.addMode = !req.row
+		req.$p.form = req.model.form
 		#console.log form
 		#console.log 'Row: ', req.row
-		renderObj = {
+		req.$p.renderObj = {
 			formOpts: {}
 		}
+		req.$p.renderObj.conditions = if 'object' == typeof req.query.conditions then req.query.conditions else {}
+		console.log req.$p.renderObj
 		tasks = []
 		#console.log form.fields
 		for field in req.model.fields
@@ -332,12 +349,17 @@ class Admin
 		async.parallel tasks, ()->
 			# An ugly hack, but apparently forms.create copy objects
 			for field in req.model.fields
-				form.fields[field.path].choices = field.$p.formField.choices if field.$p.formField.choices
+				req.$p.form.fields[field.path].choices = field.$p.formField.choices if field.$p.formField.choices
 
 			#console.log req.body
-			form.handle req, {
+			if 'GET'==req.method
+				self._rEditEmpty(req, res)
+				return
+
+			req.$p.form.handle req, {
 				success: (nform)->
-					if addMode
+					console.log 'SUCCESS!'
+					if req.$p.addMode
 						req.row = new req.model.obj
 
 					dataToSet = {}
@@ -349,7 +371,7 @@ class Admin
 							delete dataToSet[field.path]
 
 					# Also set the conditions as field values
-					if addMode
+					if req.$p.addMode
 						dataToSet[k] = v for k, v of req.model.conditions
 						#return res.send 'WIP'
 
@@ -361,31 +383,24 @@ class Admin
 						#return console.log doc
 						if err
 							#console.log 'Error', err, err.errors
-							renderObj.form = nform
+							req.$p.renderObj.form = nform
 							if err.errors # Need to have a closer look at this...
 								for fdName, error of err.errors
-									renderObj.form.fields[fdName].error = error.message
+									req.$p.renderObj.form.fields[fdName].error = error.message
 							else
-								renderObj.form.fields[err.path].error = err.message
-							self._render req, res, 'edit', renderObj
+								req.$p.renderObj.form.fields[err.path].error = err.message
+							self._render req, res, 'edit', req.$p.renderObj
 						else
-							res.redirect './'
+							res.redirect './' + self._getQueryString(req)
 
 
 				error: (nform)->
 					#console.log 'Form Error'
-					renderObj.form = nform
-					self._render req, res, 'edit', renderObj
+					req.$p.renderObj.form = nform
+					self._render req, res, 'edit', req.$p.renderObj
 
 				empty: ()->
-					#console.log 'Form Empty'
-					#console.log req.row
-					
-					if addMode
-						renderObj.form = form
-					else
-						renderObj.form = form.bind(req.row)
-					self._render req, res, 'edit', renderObj
+					self._rEditEmpty(req, res)
 
 			}
 
