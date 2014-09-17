@@ -115,6 +115,9 @@ class Admin
 
 	getModelDetails: (vModel)=>
 		model = self.models[vModel.base]
+		if not model
+			console.error 'Could not find model for', vModel
+			console.error 'We only have these models:', Object.keys(self.models)
 		overrides = if vModel.slug == vModel.base then {} else defaults.model$pOverrides
 		ret = merge true, defaults.model$p, model.$p, overrides, {
 				label:	@constructor._t(vModel.slug)
