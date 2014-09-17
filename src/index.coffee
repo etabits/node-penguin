@@ -95,15 +95,18 @@ class Admin
 		null
 
 	_readModels: (path, done)->
+		debug 'Reading models at %s, from %s', path, process.cwd()
 		fs.readdir path, (err, files)->
-
+			debug 'Got the following model files:', files
 			for f in files
-				require "#{path}/#{f}" 
+				require "#{path}/#{f}"
 
 			models = {}
 			for modelName, model of mongoose.models
 				models[model.collection.name] = model
-
+			debug 'Models: obj', Object.keys(models)
+			debug 'Models: mongoose', Object.keys(mongoose.models)
+			
 			return done(null, models)
 
 			
