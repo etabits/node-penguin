@@ -26,7 +26,7 @@ for c in [1..100]
 		title:"Article #{c}"
 		content: "Content for article #{c}"
 		date: new Date(now+1000*c)
-		published: false
+		published: Math.random()>0.5
 	}
 
 
