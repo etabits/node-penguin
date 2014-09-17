@@ -30,6 +30,8 @@ class Admin
 		self = this
 		@opts = merge(defaults.opts, @opts)
 		@opts.staticsPath ?= "#{@opts.mountPath}/_statics"
+		@opts.templatesPath ?= path.resolve(__dirname, '../views/', '%s.jade')
+		console.log @opts
 		self.models = {}
 		self.modelDetails = {}
 		self.resLocals = {
@@ -312,7 +314,7 @@ class Admin
 		return res.send('Not Implemented')
 
 	_render: (req, res, template, locals) =>
-		res.render path.resolve(__dirname, '../views/', template), locals
+		res.render self.opts.templatesPath.replace('%s', template), locals
 
 	rEdit: (req, res)->
 		addMode = !req.row
