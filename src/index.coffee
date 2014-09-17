@@ -26,11 +26,13 @@ bodyParser = require('body-parser').urlencoded({ extended: false })
 
 class Admin
 	self = null
+	debug = ()->
 	constructor: (@opts={}) ->
 		self = this
 		@opts = merge(defaults.opts, @opts)
 		@opts.staticsPath ?= "#{@opts.mountPath}/_statics"
 		@opts.templatesPath ?= path.resolve(__dirname, '../views/', '%s.jade')
+		debug = opts.debug if @opts.debug
 		console.log @opts
 		self.models = {}
 		self.modelDetails = {}
