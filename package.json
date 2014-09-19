@@ -23,5 +23,9 @@
   "peerDependencies": {
     "express": "4.x",
     "mongoose": "3.8.x"
+  },
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/etabits/node-penguin"
   }
 }
