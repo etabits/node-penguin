@@ -1,6 +1,6 @@
 {
   "name": "penguin",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Automatic administration interface based on your Mongoose models",
   "main": "index.js",
   "scripts": {
@@ -24,8 +24,8 @@
     "express": "4.x",
     "mongoose": "3.8.x"
   },
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/etabits/node-penguin"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/etabits/node-penguin"
   }
 }
