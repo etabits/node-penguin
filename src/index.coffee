@@ -175,7 +175,8 @@ class Admin
 		def = merge true, defaults.field$p
 		fieldOpts = merge true, field.options.$p
 		#console.log field.options.type.name
-		if defaults.typesMap[field.options.type?.name]
+		# if the `type` was not overriden in field opts, and we have a default type/widget for this field in our map
+		if not fieldOpts.type && defaults.typesMap[field.options.type?.name]
 			def.type = defaults.typesMap[field.options.type.name][0]
 			def.widget = defaults.typesMap[field.options.type.name][1]
 
