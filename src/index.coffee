@@ -175,7 +175,7 @@ class Admin
 		def = merge true, defaults.field$p
 		fieldOpts = merge true, field.options.$p
 		#console.log field.options.type.name
-		if not fieldOpts.type && 'undefined' != typeof defaults.typesMap[field.options.type.name]
+		if defaults.typesMap[field.options.type?.name]
 			def.type = defaults.typesMap[field.options.type.name][0]
 			def.widget = defaults.typesMap[field.options.type.name][1]
 
