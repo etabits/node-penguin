@@ -101,9 +101,19 @@ admin = new penguin.Admin {
 	]
 
 
+	# Called before any routing takes place, nothing is prepared, no parameters no .$p
+	# Also intercepts statics
+	# A good place to implement authentication
 	preMiddleware: (req, res, next)->
 		#return if -1 != req.headers['user-agent'].indexOf('Firefox') then next() else res.redirect '/'
-		console.log 'Administration Request:', req.url
+		console.log 'Administration Request:', req.url, req.$p
+		return next()
+
+
+	# Called just before actual route invokation, req.$p is set here
+	# A good place to implement authorization (per action/model/row...)
+	beforeMiddleware: (req, res, next)->
+		console.log 'beforeMiddleware', req.url, Object.keys(req.$p)
 		return next()
 }
 
