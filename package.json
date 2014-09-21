@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Hasan Arous <hasan.arous@gmail.com> (http://www.etabits.com/)",
   "license": "GPL-2",
   "dependencies": {
     "forms": "~0.9.x",
