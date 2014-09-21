@@ -37,5 +37,9 @@ d.typesMap = { # constructor / widget
 	Boolean:	['boolean', 'checkbox']
 	Date:		['string', 'datetime']
 }
+d.res$p = {
+	viewBlocks: {}
+}
+#d.resLocals = {}
 
 module.exports = d

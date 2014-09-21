@@ -206,8 +206,9 @@ class Admin
 		app.use @opts.mountPath, @opts.preMiddleware if @opts.preMiddleware
 		app.use @opts.mountPath, (req, res, next)->
 			req.$p = {}
-			res.$p = {}
+			res.$p = merge true, defaults.res$p
 			next()
+
 		app.use @opts.mountPath, @router
 		app.locals.t = @constructor._t
 
@@ -219,6 +220,7 @@ class Admin
 			else debug('mPrepareRequest not handling op:', req.$p.op)
 
 		#console.log req.params
+		res.locals.getViewBlock = (blockName)-> res.$p.viewBlocks[blockName] || ''
 		next()
 
 	createRouteWrapper: (routeHandler, $p)->
@@ -263,7 +265,7 @@ class Admin
 
 	setupRoutes: =>
 		@router.route('/')
-			.get			@rIndex					# INDEX
+			.get			@createRouteWrapper(@rIndex, {op: 'index'})							# INDEX
 
 		@router.route('/:collection')
 			.get			@createRouteWrapper(@rCollection, {op: 'list'})						# LIST

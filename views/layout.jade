@@ -12,9 +12,10 @@ html
 		.navbar.navbar-inverse.navbar-embossed
 			+menu(menus.main, 'nav navbar-nav navbar-left')
 			!=menuExtraHTML
-
+		!=getViewBlock('layout.below_top_menu')
 
 		.container-fluid
+			!=getViewBlock('layout.above_content')
 			block content
 
 		each script in statics.js
