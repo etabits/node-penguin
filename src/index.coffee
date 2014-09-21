@@ -27,6 +27,8 @@ bodyParser = require('body-parser').urlencoded({ extended: false })
 class Admin
 	self = null
 	debug = ()->
+
+	## Instantiation
 	constructor: (@opts={}) ->
 		self = this
 		@opts = merge(defaults.opts, @opts)
@@ -109,12 +111,6 @@ class Admin
 			
 			return done(null, models)
 
-			
-
-
-
-	@_t: (str)->
-		str.replace(/([a-z])([A-Z])/g, '$1 $2').replace /(?:^|_)[a-z]/g, (m) -> m.replace(/^_/, ' ').toUpperCase()
 
 	getModelDetails: (vModel)=>
 		model = self.models[vModel.base]
@@ -210,7 +206,7 @@ class Admin
 		app.use @opts.mountPath, @router
 		app.locals.t = @constructor._t
 
-	# PARAMETERS
+	## PARAMETERS
 	setupParams: =>
 		@router.param ':collection', @pCollection
 		@router.param ':id', @pId
@@ -237,17 +233,7 @@ class Admin
 		return
 
 
-	getMulterMiddleware: ->
-		if not self.multerMiddleware
-			multer  = require('multer')
-			self.multerMiddleware = multer {
-				dest: './uploads/'
-				includeEmptyFields: true
-			}
-
-		self.multerMiddleware
-
-	# ROUTES
+	## ROUTES
 	setupRoutes: =>
 		@router.route('/')
 			.get			@rIndex					# INDEX
@@ -319,14 +305,6 @@ class Admin
 				pagination: result
 			}
 
-	_getQueryString: (req, newObj)->
-		'?'+qs.stringify merge(true, req.query, newObj)
-
-	rNotImplemented: (req, res)=>
-		return res.send('Not Implemented')
-
-	_render: (req, res, template, locals) =>
-		res.render self.opts.templatesPath.replace('%s', template), locals
 
 
 	_rEditEmpty: (req, res)->
@@ -412,6 +390,30 @@ class Admin
 					self._rEditEmpty(req, res)
 
 			}
+
+	rNotImplemented: (req, res)=>
+		return res.send('Not Implemented')
+
+	## MISC
+	@_t: (str)->
+		str.replace(/([a-z])([A-Z])/g, '$1 $2').replace /(?:^|_)[a-z]/g, (m) -> m.replace(/^_/, ' ').toUpperCase()
+	
+	_getQueryString: (req, newObj)->
+		'?'+qs.stringify merge(true, req.query, newObj)
+
+
+	_render: (req, res, template, locals) =>
+		res.render self.opts.templatesPath.replace('%s', template), locals
+
+	getMulterMiddleware: ->
+		if not self.multerMiddleware
+			multer  = require('multer')
+			self.multerMiddleware = multer {
+				dest: './uploads/'
+				includeEmptyFields: true
+			}
+
+		self.multerMiddleware
 
 
 
