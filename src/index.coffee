@@ -254,7 +254,7 @@ class Admin
 		query = query.populate req.$p.model.fieldsToPopulate.join(' ')
 		query.exec (err, doc)->
 
-			req.row = doc
+			req.$p.row = doc
 			return next()
 		return
 
@@ -336,20 +336,20 @@ class Admin
 
 	_rEditEmpty: (req, res)->
 		console.log 'Form Empty'
-		#console.log req.row
+		#console.log req.$p.row
 		
 		if req.$p.addMode
 			req.$p.renderObj.form = req.$p.form
 		else
-			req.$p.renderObj.form = req.$p.form.bind(req.row)
+			req.$p.renderObj.form = req.$p.form.bind(req.$p.row)
 		self._render req, res, 'edit', req.$p.renderObj
 
 	rEdit: (req, res)->
 		#req.$p = {}
-		req.$p.addMode = !req.row
+		req.$p.addMode = !req.$p.row
 		req.$p.form = req.$p.model.form
 		#console.log form
-		#console.log 'Row: ', req.row
+		#console.log 'Row: ', req.$p.row
 		req.$p.renderObj = {
 			formOpts: {}
 		}
@@ -374,7 +374,7 @@ class Admin
 				success: (nform)->
 					console.log 'SUCCESS!'
 					if req.$p.addMode
-						req.row = new req.$p.model.obj
+						req.$p.row = new req.$p.model.obj
 
 					dataToSet = {}
 					dataToSet[k]=v for k,v of nform.data
@@ -389,11 +389,11 @@ class Admin
 						dataToSet[k] = v for k, v of req.$p.model.conditions
 						#return res.send 'WIP'
 
-					req.row[k]=v for k,v of dataToSet
+					req.$p.row[k]=v for k,v of dataToSet
 
-					#return console.log '111',  nform.data, dataToSet, req.row
+					#return console.log '111',  nform.data, dataToSet, req.$p.row
 
-					req.row.save (err, doc)->
+					req.$p.row.save (err, doc)->
 						#return console.log doc
 						if err
 							#console.log 'Error', err, err.errors
