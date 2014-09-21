@@ -12,12 +12,12 @@ actions._export_csv = {
         stream = query.stream()
         res = context.res
         fields = []
-        for field in context.req.model.fields
+        for field in context.req.$p.model.fields
             continue if (-1 == field.$p.display.indexOf('l'))
             fields.push(field.path)
 
-        #console.log context.req.model
-        filename = context.req.model.label + '-' + (new Date).toISOString().replace(/[\-:.TZ]/g, '')
+        #console.log context.req.$p.model
+        filename = context.req.$p.model.label + '-' + (new Date).toISOString().replace(/[\-:.TZ]/g, '')
 
         res.writeHead 200, {
             'Content-disposition':  "attachment; filename=#{filename}.csv"

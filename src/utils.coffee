@@ -4,7 +4,7 @@ utils = {}
 utils.createSimpleAction = (updateDoc)->
 	{
 		apply: (conditions, context, done)->
-			context.req.model.obj.update conditions, updateDoc, {multi: true}, done
+			context.req.$p.model.obj.update conditions, updateDoc, {multi: true}, done
 		displaysFor: (row)->
 			for field, val of updateDoc
 				return true if val != row[field]
@@ -12,12 +12,12 @@ utils.createSimpleAction = (updateDoc)->
 	}
 
 utils.createMongoQueryFromRequest = (req)->
-	conditions = merge true, req.model.conditions, req.query.conditions
+	conditions = merge true, req.$p.model.conditions, req.query.conditions
 
 	if req.query.q
 		rx = new RegExp(req.query.q, 'i')
 		$orConditions = []
-		for f in req.model.fields
+		for f in req.$p.model.fields
 			continue if 'String'!=f.instance
 			#console.log f.instance, f.path
 			continue if conditions[f.path]
@@ -27,11 +27,11 @@ utils.createMongoQueryFromRequest = (req)->
 		if $orConditions.length
 			conditions.$or = $orConditions
 
-	mongoQuery = req.model.obj.find(conditions)
+	mongoQuery = req.$p.model.obj.find(conditions)
 	if req.query.sort
 		query = mongoQuery.sort(req.query.sort)
 	else
-		query = mongoQuery.sort(req.model.sort)
+		query = mongoQuery.sort(req.$p.model.sort)
 	mongoQuery
 
 module.exports = utils

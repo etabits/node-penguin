@@ -204,6 +204,10 @@ class Admin
 
 		#app.use @opts.mountPath, @mPrepareRequest
 		app.use @opts.mountPath, @opts.preMiddleware if @opts.preMiddleware
+		app.use @opts.mountPath, (req, res, next)->
+			req.$p = {}
+			res.$p = {}
+			next()
 		app.use @opts.mountPath, @router
 		app.locals.t = @constructor._t
 
@@ -219,7 +223,7 @@ class Admin
 
 	createRouteWrapper: (routeHandler, $p)->
 		(req, res, next)->
-			req.$p = merge {}, $p
+			merge req.$p, $p
 			# First we'll invoke the request preparing middleware
 			self.mPrepareRequest req, res, ()->
 				# Then we'll invoke the preMiddleware
@@ -237,17 +241,17 @@ class Admin
 		return
 
 	pCollection: (req, res, next)->
-		req.model = self.modelDetails[req.params.collection]
-		if 'undefined' == typeof req.model
+		req.$p.model = self.modelDetails[req.params.collection]
+		if 'undefined' == typeof req.$p.model
 			return res.send(404)
 
-		res.locals.model = self.modelDetails[req.params.collection]
+		res.locals.model = req.$p.model
 		return next()
 
 	pId: (req, res, next)->
 		return res.send(404) if not req.params.id.match /^[0-9a-f]{24}$/
-		query = req.model.obj.findById(req.params.id)
-		query = query.populate req.model.fieldsToPopulate.join(' ')
+		query = req.$p.model.obj.findById(req.params.id)
+		query = query.populate req.$p.model.fieldsToPopulate.join(' ')
 		query.exec (err, doc)->
 
 			req.row = doc
@@ -294,9 +298,9 @@ class Admin
 				req.body.ids = req.body.ids.split(',')
 				conditions._id = {$in: req.body.ids}
 
-			action = req.model.actions[req.body.action]
+			action = req.$p.model.actions[req.body.action]
 			return next() if not action
-			action.apply conditions, {req: req, model: req.model, res: res}, (err)->
+			action.apply conditions, {req: req, model: req.$p.model, res: res}, (err)->
 				return next(err) if err
 				# Chrome wouldn't interpret '' as a redirect to the same location
 				res.redirect self.opts.mountPath + req.url
@@ -307,11 +311,11 @@ class Admin
 	rCollection: (req, res)=>
 
 		query = utils.createMongoQueryFromRequest(req)
-		#console.log 'fieldsToPopulate', req.model.fieldsToPopulate
-		query = query.populate(req.model.fieldsToPopulate.join(' '))
+		#console.log 'fieldsToPopulate', req.$p.model.fieldsToPopulate
+		query = query.populate(req.$p.model.fieldsToPopulate.join(' '))
 
 		paginationOptions = {
-			perPage: req.model.itemsPerPage
+			perPage: req.$p.model.itemsPerPage
 			delta  : 3
 			page   : req.query.p
 		}
@@ -323,7 +327,7 @@ class Admin
 
 			self._render req, res, 'collection', {
 				docs:	result.results
-				title:	req.model.label
+				title:	req.$p.model.label
 				urlQuery:	req.query
 				pagination: result
 			}
@@ -343,7 +347,7 @@ class Admin
 	rEdit: (req, res)->
 		#req.$p = {}
 		req.$p.addMode = !req.row
-		req.$p.form = req.model.form
+		req.$p.form = req.$p.model.form
 		#console.log form
 		#console.log 'Row: ', req.row
 		req.$p.renderObj = {
@@ -353,12 +357,12 @@ class Admin
 		console.log req.$p.renderObj
 		tasks = []
 		#console.log form.fields
-		for field in req.model.fields
+		for field in req.$p.model.fields
 			tasks = tasks.concat field.$p.tasks
 		
 		async.parallel tasks, ()->
 			# An ugly hack, but apparently forms.create copy objects
-			for field in req.model.fields
+			for field in req.$p.model.fields
 				req.$p.form.fields[field.path].choices = field.$p.formField.choices if field.$p.formField.choices
 
 			#console.log req.body
@@ -370,19 +374,19 @@ class Admin
 				success: (nform)->
 					console.log 'SUCCESS!'
 					if req.$p.addMode
-						req.row = new req.model.obj
+						req.row = new req.$p.model.obj
 
 					dataToSet = {}
 					dataToSet[k]=v for k,v of nform.data
 
 					# Just unset the '' file fields from the data to be set in the row
-					for field in req.model.fields
+					for field in req.$p.model.fields
 						if 'ObjectID' == field.instance && 'File' == field.options.ref && !dataToSet[field.path]
 							delete dataToSet[field.path]
 
 					# Also set the conditions as field values
 					if req.$p.addMode
-						dataToSet[k] = v for k, v of req.model.conditions
+						dataToSet[k] = v for k, v of req.$p.model.conditions
 						#return res.send 'WIP'
 
 					req.row[k]=v for k,v of dataToSet
