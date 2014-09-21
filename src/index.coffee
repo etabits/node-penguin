@@ -35,6 +35,7 @@ class Admin
 		@opts.staticsPath ?= "#{@opts.mountPath}/_statics"
 		@opts.templatesPath ?= path.resolve(__dirname, '../views/', '%s.jade')
 		debug = opts.debug if @opts.debug
+		@opts.beforeMiddleware ?= (req, res, next)-> next()
 		console.log @opts
 		self.models = {}
 		self.modelDetails = {}
@@ -201,10 +202,31 @@ class Admin
 		@setupParams()
 		@setupRoutes()
 
-		if @opts.preMiddleware
-			app.use @opts.mountPath, @opts.preMiddleware
+		#app.use @opts.mountPath, @mPrepareRequest
+		app.use @opts.mountPath, @opts.preMiddleware if @opts.preMiddleware
 		app.use @opts.mountPath, @router
 		app.locals.t = @constructor._t
+
+	## Middlewares
+	mPrepareRequest: (req, res, next)->
+		switch req.$p.op
+			when 'list', 'addform', 'add', 'edit', 'update' then # do nothing
+			when 'action' then req.$p.action = req.body.action
+			else debug('mPrepareRequest not handling op:', req.$p.op)
+
+		#console.log req.params
+		next()
+
+	createRouteWrapper: (routeHandler, $p)->
+		(req, res, next)->
+			req.$p = merge {}, $p
+			# First we'll invoke the request preparing middleware
+			self.mPrepareRequest req, res, ()->
+				# Then we'll invoke the preMiddleware
+					self.opts.beforeMiddleware req, res, ()->
+						# now we'll invoke the handler itself!
+						routeHandler(req, res, next)
+
 
 	## PARAMETERS
 	setupParams: =>
@@ -234,13 +256,14 @@ class Admin
 
 
 	## ROUTES
+
 	setupRoutes: =>
 		@router.route('/')
 			.get			@rIndex					# INDEX
 
 		@router.route('/:collection')
-			.get			@rCollection			# LIST
-			.post			bodyParser, @rCollectionPOST	# Actions
+			.get			@createRouteWrapper(@rCollection, {op: 'list'})						# LIST
+			.post			bodyParser, @createRouteWrapper(@rCollectionPOST, {op: 'action'})	# Actions
 
 		
 		postMiddlewares = []
@@ -250,13 +273,13 @@ class Admin
 
 
 		@router.route('/:collection/add')
-			.get			@rEdit					# Add form
-			.post			postMiddlewares, @rEdit	# Add
+			.get			@createRouteWrapper(@rEdit, {op: 'addform'})						# Add form
+			.post			postMiddlewares, @createRouteWrapper(@rEdit, {op: 'add'})			# Add
 
 		@router.route('/:collection/:id')
-			.get			@rEdit					# EDIT
-			.post			postMiddlewares, @rEdit	# UPDATE
-			.delete			@rNotImplemented		# DELETE
+			.get			@createRouteWrapper(@rEdit, {op: 'edit'})							# EDIT
+			.post			postMiddlewares, @createRouteWrapper(@rEdit, {op: 'update'})		# UPDATE
+			#.delete			@rNotImplemented		# DELETE
 
 	rIndex: (req, res)=>
 		self._render req, res, 'index', {title: @opts.indexTitle}
@@ -318,7 +341,7 @@ class Admin
 		self._render req, res, 'edit', req.$p.renderObj
 
 	rEdit: (req, res)->
-		req.$p = {}
+		#req.$p = {}
 		req.$p.addMode = !req.row
 		req.$p.form = req.model.form
 		#console.log form
@@ -397,7 +420,7 @@ class Admin
 	## MISC
 	@_t: (str)->
 		str.replace(/([a-z])([A-Z])/g, '$1 $2').replace /(?:^|_)[a-z]/g, (m) -> m.replace(/^_/, ' ').toUpperCase()
-	
+
 	_getQueryString: (req, newObj)->
 		'?'+qs.stringify merge(true, req.query, newObj)
 
