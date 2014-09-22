@@ -9,17 +9,23 @@ html
 			link(href=style, rel='stylesheet', type='text/css')
 
 	body
+		+getViewBlock('layout.body_start')
 		.navbar.navbar-inverse.navbar-embossed
 			+menu(menus.main, 'nav navbar-nav navbar-left')
 			!=menuExtraHTML
-		!=getViewBlock('layout.below_top_menu')
+		+getViewBlock('layout.below_top_menu')
 
 		.container-fluid
-			!=getViewBlock('layout.above_content')
+			+getViewBlock('layout.above_content')
+			+getViewBlock(templateName+'.above_content')
 			block content
+			+getViewBlock(templateName+'.below_content')
+			+getViewBlock('layout.below_content')
 
+		+getViewBlock('layout.body_end')
 		each script in statics.js
 			script(src=script, type='text/javascript')
+
 				
 			
 		

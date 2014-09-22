@@ -28,3 +28,8 @@ mixin displayActions(actions, opts)
 
 			if display
 				button.btn.btn-primary.btn-sm(data-action=actionName)=t(actionName)
+
+
+mixin getViewBlock(blockName)
+	!=getViewBlock(blockName)
+	

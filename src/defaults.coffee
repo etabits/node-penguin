@@ -9,6 +9,7 @@ d.opts = {
 	indexTitle:		'Penguin Geese Admin'
 	fileManager:	false
 	menuExtraHTML:  '<!-- inside menu -->'
+	defaultViewBlock: ''
 }
 d.model$p = {
 	fields: []

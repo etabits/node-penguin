@@ -80,6 +80,9 @@ admin = new penguin.Admin {
 		}
 	}
 
+	# This marks areas where you can set your content.
+	defaultViewBlock: '<div class="text-center well well-sm"">%s</div>'
+
 	# extra html in the menu bar
 	menuExtraHTML: '
 		<ul class="nav navbar-nav navbar-right">

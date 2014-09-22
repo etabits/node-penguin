@@ -220,7 +220,7 @@ class Admin
 			else debug('mPrepareRequest not handling op:', req.$p.op)
 
 		#console.log req.params
-		res.locals.getViewBlock = (blockName)-> res.$p.viewBlocks[blockName] || ''
+		res.locals.getViewBlock = (blockName)-> res.$p.viewBlocks[blockName] || self.opts.defaultViewBlock.replace('%s', blockName)
 		next()
 
 	createRouteWrapper: (routeHandler, $p)->
@@ -432,6 +432,7 @@ class Admin
 
 
 	_render: (req, res, template, locals) =>
+		res.locals.templateName = template
 		res.render self.opts.templatesPath.replace('%s', template), locals
 
 	getMulterMiddleware: ->
