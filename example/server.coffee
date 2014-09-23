@@ -18,8 +18,6 @@ app = express()
 
 developmentMode = app.get('env') == 'development'
 
-
-
 # Setting up VIEWS
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'jade');
@@ -81,7 +79,7 @@ admin = new penguin.Admin {
 	}
 
 	# This marks areas where you can set your content.
-	defaultViewBlock: '<div class="text-center well well-sm"">%s</div>'
+	defaultViewBlock: '<div class="text-center well well-sm">%s</div>'
 
 	# extra html in the menu bar
 	menuExtraHTML: '
@@ -103,6 +101,14 @@ admin = new penguin.Admin {
 		] ]
 	]
 
+	uploadHandler: (req, res, next)->
+		penguin.fileManager.save req.files.upload, (err, file)->
+			res.send "<script type='text/javascript'>
+			window.parent.CKEDITOR.tools.callFunction(#{req.query.CKEditorFuncNum}, '/#{file.path}', 'Success!');
+			</script>"
+			#console.log arguments
+
+
 
 	# Called before any routing takes place, nothing is prepared, no parameters no .$p
 	# Also intercepts statics
@@ -120,6 +126,11 @@ admin = new penguin.Admin {
 		res.$p.viewBlocks['layout.above_content'] = '<div class="clearfix">Welcome to <strong>Penguin</strong> Automated Administration Panel!</div>'
 		return next()
 }
+
+# Want to add any static css/js?
+admin.resLocals.statics.js.push('//cdn.ckeditor.com/4.4.4/standard/ckeditor.js')
+admin.resLocals.statics.js.push('/admin/script.js')
+admin.resLocals.statics.css.push('/admin/style.css')
 
 admin.setupApp app
 
