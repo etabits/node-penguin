@@ -95,7 +95,7 @@ class Admin
 				"#{@opts.staticsPath}/js/90-penguin.js"
 			]
 		}
-		null
+		self
 
 	_readModels: (path, done)->
 		debug 'Reading models at %s, from %s', path, process.cwd()
