@@ -51,4 +51,5 @@ prepareFilesMiddleware = (req, res, next)->
 module.exports = {
 	widget: widget
 	prepareFilesMiddleware: prepareFilesMiddleware
+	save: fileUploader
 }

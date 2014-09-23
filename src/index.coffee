@@ -267,16 +267,19 @@ class Admin
 		@router.route('/')
 			.get			@createRouteWrapper(@rIndex, {op: 'index'})							# INDEX
 
-		@router.route('/:collection')
-			.get			@createRouteWrapper(@rCollection, {op: 'list'})						# LIST
-			.post			bodyParser, @createRouteWrapper(@rCollectionPOST, {op: 'action'})	# Actions
 
 		
 		postMiddlewares = []
 		if true
 			postMiddlewares.push @getMulterMiddleware()
 			postMiddlewares.push fileManager.prepareFilesMiddleware
+			@router.route('/_upload')
+				.post 		@getMulterMiddleware(), @createRouteWrapper(@rUpload, {op: 'upload'})
 
+
+		@router.route('/:collection')
+			.get			@createRouteWrapper(@rCollection, {op: 'list'})						# LIST
+			.post			bodyParser, @createRouteWrapper(@rCollectionPOST, {op: 'action'})	# Actions
 
 		@router.route('/:collection/add')
 			.get			@createRouteWrapper(@rEdit, {op: 'addform'})						# Add form
@@ -286,6 +289,10 @@ class Admin
 			.get			@createRouteWrapper(@rEdit, {op: 'edit'})							# EDIT
 			.post			postMiddlewares, @createRouteWrapper(@rEdit, {op: 'update'})		# UPDATE
 			#.delete			@rNotImplemented		# DELETE
+
+	rUpload: (req, res, next)->
+		self.opts.uploadHandler(req, res, next)
+
 
 	rIndex: (req, res)=>
 		self._render req, res, 'index', {title: @opts.indexTitle}
@@ -450,4 +457,5 @@ class Admin
 module.exports = {
 	Admin: Admin
 	utils: utils
+	fileManager: fileManager
 }
