@@ -142,11 +142,12 @@ class Admin
 			ret.fields.push(details)
 			# Instantiate a new field
 			details.$p.label ?= name
-			details.$p.formField = formFields[name] = fields[fieldOpts.type] {
-				widget: widgets[fieldOpts.widget]()
+			formFieldOpts = merge {
+				widget: widgets[fieldOpts.widget](fieldOpts.widgetOpts)
 				$pField: details
 				label: details.$p.label
-			}
+			}, fieldOpts.formFieldOpts
+			details.$p.formField = formFields[name] = fields[fieldOpts.type](formFieldOpts)
 
 			if 'ObjectID' == details.instance && 'undefined' != typeof details.options.ref
 				#console.log 'ref: ', vModel.base, name, '->', details.options.ref
