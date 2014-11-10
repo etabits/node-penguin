@@ -10,9 +10,9 @@ block content
 			input(type='hidden', name=n, value=v)
 		.form-group
 			label.sr-only(for='penguin-search-q') Search
-			input(type='text', id='penguin-search-q', name='q', placeholder='Search...', value=urlQuery.q)
+			input.form-control.input-sm(type='text', id='penguin-search-q', name='q', placeholder='Search...', value=urlQuery.q)
 
-			button.btn.btn-primary(type="submit") Search!
+			button.btn.btn-primary.btn-sm(type="submit") Search!
 
 
 	table.table.table-hover.table-condensed
@@ -38,13 +38,16 @@ block content
 				tr(data-id=row.id, class=row.$pTableRowClass)
 					td
 						input(type='checkbox')
-						a.btn.btn-link(href='#{model.path}/#{row.id}') Edit
+						a.btn.btn-link.edit-link(href='#{model.path}/#{row.id}') Edit
 					each field in model.fields
 						- var fieldValue = row[field.path]
 						- if (-1 == field.$p.display.indexOf('l')) continue;
 						if 'ObjectID' == field.instance && fieldValue
 							td
-								a(href='#{field.$p.getRefModel().path}/#{fieldValue._id}')=fieldValue.$pTitle
+								span.linked-document
+									a.fui-document(href='#{field.$p.getRefModel().path}/#{fieldValue._id}', title='Edit Linked Document')
+									|  
+									=fieldValue.$pTitle
 						else if fieldValue instanceof Date
 							td(title=fieldValue)=fieldValue.toISOString().substr(0, 19).replace('T', ' ')
 						else

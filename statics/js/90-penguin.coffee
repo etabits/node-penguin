@@ -58,4 +58,10 @@ $ ()->
 			action: $(this).attr('data-action')
 			scope: 'set'
 		}
+	allowedClickables = ['SPAN', 'TD']
+	$('table tr[data-id]').click (e)->
+		if 'SPAN' == e.target.tagName || 'TD' == e.target.tagName
+			location.href = $('a.edit-link', this)[0].href
+			return false
 
+	$('body').addClass 'js'

@@ -20,6 +20,11 @@ table {
 			.btn {
 				padding: 2px 5px;
 			}
+			td {
+				.linked-document {
+					//border-bottom: 1px solid green;
+				}
+			}
 			td.actions {
 				a {
 					margin-right: 5px;
@@ -38,4 +43,19 @@ table {
 
 .btn[data-action] {
 	margin-left: 5px;
+}
+
+body.js {
+	table {
+		tbody {
+			tr {
+				cursor: pointer;
+				td {
+					a.edit-link {
+						display: none;
+					}
+				}
+			}
+		}
+	}
 }
