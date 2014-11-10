@@ -24,7 +24,8 @@ mixin field_select(field, name, det)
 				option(value=v, selected=v===value)= t(v)
 		else
 			for l, v in source
-				option(value=v, selected=v===value)= t(l)
+				//- console.log(l, v, value, typeof v, typeof value)
+				option(value=v, selected=v==value)= t(l)
 
 mixin field_radios(field, name, det)
 	- var optionClasses = 'inner-label'
