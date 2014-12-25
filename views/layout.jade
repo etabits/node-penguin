@@ -18,6 +18,10 @@ html
 		.container-fluid
 			+getViewBlock('layout.above_content')
 			+getViewBlock(templateName+'.above_content')
+
+			if flashMessages
+				each m in flashMessages
+					.alert(class='alert-#{m.type}')!=m.body
 			block content
 			+getViewBlock(templateName+'.below_content')
 			+getViewBlock('layout.below_content')

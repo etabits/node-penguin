@@ -23,6 +23,21 @@ app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'jade');
 
 
+enableFlash = true
+try
+	cookieParser = require('cookie-parser')
+	session      = require('express-session')
+	flash = require('connect-flash')
+catch e
+	console.log 'Not enabling flash messages because:'
+	console.log e
+	enableFlash = false
+
+if enableFlash
+	console.log 'Enabling flash messages'
+	app.use(cookieParser('topsecret00:07'));
+	app.use(session({ cookie: { maxAge: 60000 }}));
+	app.use(flash());
 
 
 if developmentMode

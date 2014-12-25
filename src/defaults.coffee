@@ -10,6 +10,7 @@ d.opts = {
 	fileManager:	false
 	menuExtraHTML:  '<!-- inside menu -->'
 	defaultViewBlock: ''
+	flashMessagesIndex: 'penguinMessages'
 }
 d.model$p = {
 	fields: []

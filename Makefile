@@ -21,6 +21,12 @@ node_modules/express:
 	ln -s ../example/node_modules/express	node_modules/express
 	ln -s ../example/node_modules/mongoose	node_modules/mongoose
 
+example-flash-messages-enable:
+	cd example/ && npm install connect-flash cookie-parser express-session
+example-flash-messages-disable:
+	bash -c 'rm -r example/node_modules/{connect-flash,cookie-parser,express-session}'
+
+
 example-run: node_modules/express
 	-rm -fr example/uploads
 	cd example/ && npm install && coffee seed.coffee && supervisor -e 'jade|coffee|js|json' -i ../views,../statics -w ../ -x coffee -n error -- server.coffee

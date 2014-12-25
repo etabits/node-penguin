@@ -415,6 +415,12 @@ class Admin
 								req.$p.renderObj.form.fields[err.path].error = err.message
 							self._render req, res, 'edit', req.$p.renderObj
 						else
+							if req.flash && self.opts.flashMessagesIndex
+								console.log 'Adding flash message'
+								req.flash self.opts.flashMessagesIndex, {
+									type: 'success'
+									body: "#{req.$p.model.label.replace(/s$/, '')} saved successfully!"
+								}
 							if 'collection'==req.$p.model.redirectAfterAddEdit
 								res.redirect './' + self._getQueryString(req)
 							else
@@ -444,6 +450,9 @@ class Admin
 
 	_render: (req, res, template, locals) =>
 		res.locals.templateName = template
+		if req.flash && self.opts.flashMessagesIndex
+			res.locals.flashMessages = req.flash(self.opts.flashMessagesIndex)
+
 		res.render self.opts.templatesPath.replace('%s', template), locals
 
 	getMulterMiddleware: ->
