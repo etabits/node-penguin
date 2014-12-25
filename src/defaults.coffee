@@ -22,6 +22,8 @@ d.model$p = {
 	setActions: []
 	sort:		'-_id'
 	itemsPerPage: 25
+	showAddButton: true
+	showSearchForm: true
 }
 d.model$pOverrides = {
 	hide: false

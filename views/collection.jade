@@ -2,17 +2,19 @@ extends layout
 include p/mixins
 
 block content
-	a.pull-left.btn.btn-primary(href='#{model.path}/add'+getQueryString()) Add a New #{model.label.replace(/s$/, '')}...
+	if model.showAddButton
+		a.pull-left.btn.btn-primary(href='#{model.path}/add'+getQueryString()) Add a New #{model.label.replace(/s$/, '')}...
 	//- console.log(model)
-	form.form-inline.pull-right(role='form')
-		each v, n in urlQuery
-			- if ('q'==n) continue;
-			input(type='hidden', name=n, value=v)
-		.form-group
-			label.sr-only(for='penguin-search-q') Search
-			input.form-control.input-sm(type='text', id='penguin-search-q', name='q', placeholder='Search...', value=urlQuery.q)
+	if model.showSearchForm
+		form.form-inline.pull-right(role='form')
+			each v, n in urlQuery
+				- if ('q'==n) continue;
+				input(type='hidden', name=n, value=v)
+			.form-group
+				label.sr-only(for='penguin-search-q') Search
+				input.form-control.input-sm(type='text', id='penguin-search-q', name='q', placeholder='Search...', value=urlQuery.q)
 
-			button.btn.btn-primary.btn-sm(type="submit") Search!
+				button.btn.btn-primary.btn-sm(type="submit") Search!
 
 
 	table.table.table-hover.table-condensed

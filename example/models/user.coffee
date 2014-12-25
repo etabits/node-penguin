@@ -14,6 +14,8 @@ userSchema.virtual('$pTableRowClass').get ()-> if this.isAdmin then 'info' else 
 User = mongoose.model('User', userSchema)
 
 User.$p = {
+    showAddButton: false
+    showSearchForm: false
     rowActions: [
         {
             label:  'Articles'
@@ -24,6 +26,7 @@ User.$p = {
             href: '/pages?conditions[user]={$row.id}'
         }
     ]
+    pageActions: []
 }
 
 module.exports = User
