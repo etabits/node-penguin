@@ -16,6 +16,7 @@ User = mongoose.model('User', userSchema)
 User.$p = {
     showAddButton: false
     showSearchForm: false
+    redirectAfterAddEdit: 'old'
     rowActions: [
         {
             label:  'Articles'

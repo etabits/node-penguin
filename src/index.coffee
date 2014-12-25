@@ -415,7 +415,10 @@ class Admin
 								req.$p.renderObj.form.fields[err.path].error = err.message
 							self._render req, res, 'edit', req.$p.renderObj
 						else
-							res.redirect './' + self._getQueryString(req)
+							if 'collection'==req.$p.model.redirectAfterAddEdit
+								res.redirect './' + self._getQueryString(req)
+							else
+								res.redirect req.originalUrl
 
 
 				error: (nform)->

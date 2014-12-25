@@ -24,6 +24,7 @@ d.model$p = {
 	itemsPerPage: 25
 	showAddButton: true
 	showSearchForm: true
+	redirectAfterAddEdit: 'collection'
 }
 d.model$pOverrides = {
 	hide: false
