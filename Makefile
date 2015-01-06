@@ -34,3 +34,7 @@ example-run: node_modules/express
 download-libs:
 	wget -O statics/js/30-moment.js http://momentjs.com/downloads/moment.js
 	wget -O statics/js/31-combodate.js https://raw.githubusercontent.com/vitalets/combodate/master/combodate.js
+
+
+compress:
+	./scripts/compress.sh

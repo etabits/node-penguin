@@ -1,7 +1,7 @@
 fs = require 'fs'
 path = require 'path'
 qs = require 'qs'
-
+packageJson = require('../package.json');
 express = require 'express'
 mongoose = require 'mongoose'
 merge = require 'merge'
@@ -81,20 +81,31 @@ class Admin
 			}
 			self.resLocals.menuExtraHTML = self.opts.menuExtraHTML
 			null
-		self.resLocals.statics = {
-			css: [
-				"#{@opts.staticsPath}/css/10-bootstrap.css"
-				"#{@opts.staticsPath}/css/20-flatui.css"
-				"#{@opts.staticsPath}/css/50-penguin.css"
-			]
-			js: [
-				"#{@opts.staticsPath}/js/10-jquery.js"
-				"#{@opts.staticsPath}/js/20-bootstrap.js"
-				"#{@opts.staticsPath}/js/30-moment.js"
-				"#{@opts.staticsPath}/js/31-combodate.js"
-				"#{@opts.staticsPath}/js/90-penguin.js"
-			]
-		}
+		#console.log packageJson
+		if 'production'==process.env.NODE_ENV
+			self.resLocals.statics = {
+				css: [
+					"#{@opts.staticsPath}/style.css?v=#{packageJson.version}"
+				]
+				js: [
+					"#{@opts.staticsPath}/script.js?v=#{packageJson.version}"
+				]
+			}
+		else
+			self.resLocals.statics = {
+				css: [
+					"#{@opts.staticsPath}/css/10-bootstrap.css"
+					"#{@opts.staticsPath}/css/20-flatui.css"
+					"#{@opts.staticsPath}/css/50-penguin.css"
+				]
+				js: [
+					"#{@opts.staticsPath}/js/10-jquery.js"
+					"#{@opts.staticsPath}/js/20-bootstrap.js"
+					"#{@opts.staticsPath}/js/30-moment.js"
+					"#{@opts.staticsPath}/js/31-combodate.js"
+					"#{@opts.staticsPath}/js/90-penguin.js"
+				]
+			}
 		self
 
 	_readModels: (path, done)->
