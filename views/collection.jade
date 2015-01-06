@@ -40,7 +40,7 @@ block content
 				tr(data-id=row.id, class=row.$pTableRowClass)
 					td
 						input(type='checkbox')
-						a.btn.btn-link.edit-link(href='#{model.path}/#{row.id}') Edit
+						a.btn.btn-link.edit-link(href='#{model.path}/#{row.id}'+getQueryString()) Edit
 					each field in model.fields
 						- var fieldValue = row[field.path]
 						- if (-1 == field.$p.display.indexOf('l')) continue;
