@@ -1,5 +1,7 @@
 async = require 'async'
-
+fs = require('fs')
+crypto = require('crypto')
+sha1sum = (buf)-> crypto.createHash('sha1').update(buf).digest('hex');
 widget = (opt={})->
 	w = {
 		classes: opt.classes
@@ -48,8 +50,61 @@ prepareFilesMiddleware = (req, res, next)->
 
 	#return res.send 'WIP'
 
+rawFileUploader = (raw, done)->
+	hash = sha1sum(raw)
+	path = "uploads/hash/#{hash}.dat"
+	async.parallel {
+		saveFile: (done)->
+			fs.writeFile path, raw, done
+		fileObj: (done)->
+
+			f = new File {
+				name: 			"base64-#{hash}"
+				originalName:	"base64-#{hash}"
+				path:			"/#{path}"
+				extension:		'dat'
+				mimeType:		'x-application/data'
+				size:			raw.length
+				source: {
+					model: ''
+					field: ''
+				}
+			}
+			f.save (err, savedDoc)->
+				done(err, savedDoc)
+
+	}, (err, results)->
+		done(err, results.fileObj)
+
+
+
+
+uploadRawFilesArray = (files, opts, done)->
+	async.map files, rawFileUploader, done
+
+
+
+fixBase64 = (html, opts, done)->
+	files = []
+	html = html.replace /src="data:;base64,([^"]+)"/g, (a, base64)->
+		counter = files.length
+		files[counter] = new Buffer(base64, 'base64')
+		return "src=\"data:;x-penguin,#{counter}\""
+
+	uploadRawFilesArray files, opts, (err, results)->
+		#console.log results
+
+		html = html.replace /src="data:;x-penguin,(\d+)"/g, (a, number)->
+			#console.log number
+			"src=\"#{results[number].path}\""
+		#console.log html
+		done(err, html)
+
+	#console.log files, html
+
 module.exports = {
 	widget: widget
 	prepareFilesMiddleware: prepareFilesMiddleware
 	save: fileUploader
+	fixBase64: fixBase64
 }

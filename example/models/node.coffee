@@ -14,6 +14,14 @@ schema = mongoose.Schema {
 
 }
 
+schema.pre 'save', (next)->
+	self = this
+	penguin.fileManager.fixBase64 this.content, {}, (err, newContent)->
+		console.log ">>", newContent
+		self.content = newContent
+		#.markModified('content')
+		next()
+    
 
 Model = mongoose.model('Node', schema)
 

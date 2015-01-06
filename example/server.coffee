@@ -134,7 +134,7 @@ admin = new penguin.Admin {
 		return next()
 
 
-	# Called just before actual route invokation, req.$p is set here
+	# Called just before actual route invocation, req.$p is set here
 	# A good place to implement authorization (per action/model/row...)
 	beforeMiddleware: (req, res, next)->
 		console.log 'beforeMiddleware', req.url, Object.keys(req.$p)
