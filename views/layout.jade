@@ -18,8 +18,17 @@ html
 
 		.container-fluid
 			+getViewBlock('layout.above_content')
-			+getViewBlock(templateName+'.above_content')
 
+			if breadcrumbs
+				ol.breadcrumb
+					each b in breadcrumbs
+						if b[0]
+							li: a(href=b[0])=b[1]
+						else
+							li.active=b[1]
+
+
+			+getViewBlock(templateName+'.above_content')
 			if flashMessages
 				each m in flashMessages
 					.alert(class='alert-#{m.type}')!=m.body

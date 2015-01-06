@@ -138,6 +138,12 @@ admin = new penguin.Admin {
 	# A good place to implement authorization (per action/model/row...)
 	beforeMiddleware: (req, res, next)->
 		console.log 'beforeMiddleware', req.url, Object.keys(req.$p)
+		#console.log res.locals.model
+		res.locals.breadcrumbs = [
+			['/admin/', 'Home']
+		]
+		if res.locals.model
+			res.locals.breadcrumbs.push ['', res.locals.model.label]
 		res.$p.viewBlocks['layout.above_content'] = '<div class="clearfix">Welcome to <strong>Penguin</strong> Automated Administration Panel!</div>'
 		return next()
 }
