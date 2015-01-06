@@ -86,15 +86,17 @@ uploadRawFilesArray = (files, opts, done)->
 
 fixBase64 = (html, opts, done)->
 	files = []
-	html = html.replace /src="data:;base64,([^"]+)"/g, (a, base64)->
+	html2 = html.replace /src="data:([^;]*);base64,([^"]+)"/g, (a, mime, base64)->
+		#console.log mime, '!', base64; d()
 		counter = files.length
 		files[counter] = new Buffer(base64, 'base64')
 		return "src=\"data:;x-penguin,#{counter}\""
 
 	uploadRawFilesArray files, opts, (err, results)->
+		return done(err, html) if err
 		#console.log results
 
-		html = html.replace /src="data:;x-penguin,(\d+)"/g, (a, number)->
+		html = html2.replace /src="data:;x-penguin,(\d+)"/g, (a, number)->
 			#console.log number
 			"src=\"#{results[number].path}\""
 		#console.log html

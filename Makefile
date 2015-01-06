@@ -28,7 +28,7 @@ example-flash-messages-disable:
 
 
 example-run: node_modules/express
-	-rm -fr example/uploads
+	-rm -f example/uploads example/uploads/hash
 	cd example/ && npm install && coffee seed.coffee && supervisor -e 'jade|coffee|js|json' -i ../views,../statics -w ../ -x coffee -n error -- server.coffee
 
 download-libs:

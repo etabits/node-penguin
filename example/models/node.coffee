@@ -17,6 +17,9 @@ schema = mongoose.Schema {
 schema.pre 'save', (next)->
 	self = this
 	penguin.fileManager.fixBase64 this.content, {}, (err, newContent)->
+		if err
+			console.log err
+			return next()
 		console.log ">>", newContent
 		self.content = newContent
 		#.markModified('content')
