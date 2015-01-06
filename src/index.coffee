@@ -368,6 +368,7 @@ class Admin
 	rEdit: (req, res)->
 		#req.$p = {}
 		req.$p.addMode = !req.$p.row
+		res.locals.title = if req.$p.addMode then "Add #{res.locals.model.label}" else "#{req.$p.row.$pTitle || ''} - Editing"
 		req.$p.form = req.$p.model.form
 		#console.log form
 		#console.log 'Row: ', req.$p.row
