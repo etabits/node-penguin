@@ -13,7 +13,7 @@ Seeds = {
 		{type: 'a', published: true, user: IDs[0], date: new Date(), title: 'Welcome', content: 'Welcome to our new home...'}
 	]
 	User: [
-		{_id: IDs[0], username: 'Master', email: 'master@example.org', password: 'plaintextpass', isAdmin: true}
+		{_id: IDs[0], username: 'Master', email: 'master@example.org', password: 'plaintextpass', isAdmin: true, data: { alternateEmail: 'master2@example.org'}, meta: { slug: 'admin-master', settings: { hasLoggedOn: false, lastLoginDate: Date.now() }, deepMeta: { deepSlug: 'deep-admin-master'}}, tags: ['admin', 'master', 'keyMaster']}
 		{_id: IDs[1], username: 'Peon', email: 'peon@example.org', password: 'usebcrypttostorepasswords!', isAdmin: false}
 	]
 }
