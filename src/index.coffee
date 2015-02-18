@@ -414,20 +414,24 @@ class Admin
 					dataToSet = {}
 					dataToSet[k]=v for k,v of nform.data
 
-					# Just unset the '' file fields from the data to be set in the row
+					# parse field values
 					for field in req.$p.model.fields
-						if 'ObjectID' == field.instance && 'File' == field.options.ref && !dataToSet[field.path]
+						value = dataToSet[field.path]
+						#console.log('widget.type',nform.fields[field.path].widget.type, value);
+						# Just unset the '' file fields from the data to be set in the row
+						if 'ObjectID' == field.instance && 'File' == field.options.ref && !value
 							delete dataToSet[field.path]
+						# unset datetime fields that are 'undefined' strings
+						if 'datetime' == nform.fields[field.path].widget.type  && 'undefined' == value
+							delete dataToSet[field.path]
+						# convert stringified 'mixed' widget value back
+						if 'mixed' == nform.fields[field.path].widget.type && nform.fields[field.path].widget.toValue
+							dataToSet[field.path] = nform.fields[k].widget.toValue(value)
 
 					# Also set the conditions as field values
 					if req.$p.addMode
 						dataToSet[k] = v for k, v of req.$p.model.conditions
 						#return res.send 'WIP'
-
-					# convert stringified 'mixed' widget value back
-					for k,v of dataToSet
-						if nform.fields[k].widget.type == 'mixed' && nform.fields[k].widget.toValue
-							dataToSet[k] = nform.fields[k].widget.toValue(v)
 
 					# map value of flattened nested paths to mongo document
 					for k,v of dataToSet
