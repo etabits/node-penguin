@@ -41,6 +41,8 @@ d.typesMap = { # constructor / widget
 	String:		['string', 'text']
 	Boolean:	['boolean', 'checkbox']
 	Date:		['string', 'datetime']
+	Mixed:		['string', 'mixed']
+	Array:		['string', 'mixed']
 }
 d.res$p = {
 	viewBlocks: {}

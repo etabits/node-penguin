@@ -267,7 +267,12 @@ class Admin
 		query = req.$p.model.obj.findById(req.params.id)
 		query = query.populate req.$p.model.fieldsToPopulate.join(' ')
 		query.exec (err, doc)->
+			return next() if !doc
 
+			# append resolved value of nested paths to original doc
+			# so that we preserve virtual mongodoc fields as well
+			for field in req.$p.model.fields
+				doc[field.path] = utils.getFieldValueByPath(doc, field.path)
 			req.$p.row = doc
 			return next()
 		return
@@ -344,10 +349,18 @@ class Admin
 			console.log('ERR', err) if err
 			#console.log result.results
 
+			docs = []
+			for doc in result.results
+				# append resolved value of nested paths to original doc
+				# so that we preserve virtual mongodoc fields as well
+				for field in req.$p.model.fields
+					doc[field.path] = utils.getFieldValueByPath(doc, field.path)
+				docs.push doc
+
 			res.locals.getQueryString = (newObj)-> self._getQueryString(req, newObj)
 
 			self._render req, res, 'collection', {
-				docs:	result.results
+				docs:	docs
 				title:	req.$p.model.label
 				urlQuery:	req.query
 				pagination: result
@@ -411,7 +424,14 @@ class Admin
 						dataToSet[k] = v for k, v of req.$p.model.conditions
 						#return res.send 'WIP'
 
-					req.$p.row[k]=v for k,v of dataToSet
+					# convert stringified 'mixed' widget value back
+					for k,v of dataToSet
+						if nform.fields[k].widget.type == 'mixed' && nform.fields[k].widget.toValue
+							dataToSet[k] = nform.fields[k].widget.toValue(v)
+
+					# map value of flattened nested paths to mongo document
+					for k,v of dataToSet
+						utils.updateFieldValueByPath(req.$p.row, k, v)
 
 					#return console.log '111',  nform.data, dataToSet, req.$p.row
 
