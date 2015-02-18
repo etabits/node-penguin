@@ -1,4 +1,3 @@
-merge = require 'merge'
 widgets = {}
 
 dateTimeToHTML = (name, f)->
