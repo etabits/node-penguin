@@ -44,7 +44,9 @@ block content
 					each field in model.fields
 						- var fieldValue = row[field.path]
 						- if (-1 == field.$p.display.indexOf('l')) continue;
-						if 'ObjectID' == field.instance && fieldValue
+						if typeof fieldValue == 'undefined' || fieldValue == null
+							td!='&mdash;'
+						else if 'ObjectID' == field.instance
 							td
 								span.linked-document
 									a.fui-document(href='#{field.$p.getRefModel().path}/#{fieldValue._id}', title='Edit Linked Document')
@@ -52,6 +54,12 @@ block content
 									=fieldValue.$pTitle
 						else if fieldValue instanceof Date
 							td(title=fieldValue)=fieldValue.toISOString().substr(0, 19).replace('T', ' ')
+						else if Array.isArray(fieldValue)
+							td
+								i='array'
+						else if typeof fieldValue === 'object'
+							td
+								i='object'
 						else
 							//- console.log (field.options.type.name)
 							td=fieldValue

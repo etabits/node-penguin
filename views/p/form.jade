@@ -112,7 +112,11 @@ mixin display_field(field, name)
 			div(class=det.fieldClasses)
 				input.form-control(type='text', id=det.id, name='#{name}_label', value=field.value? field.value.$pTitle : '')
 				input(id="#{det.id}_id", type='hidden', name=name, value=field.value? field.value._id.toString(): '')
-
+		else if 'mixed' == field.widget.type
+			+label(field, name, det)
+			div(class=det.fieldClasses)
+				textarea.form-control.field-widget-mixed-control(id=det.id, name='#{name}').
+					!{JSON.stringify(field.value)}
 		else
 			//- console.log (field.$pField)
 			+label(field, name, det)

@@ -267,7 +267,12 @@ class Admin
 		query = req.$p.model.obj.findById(req.params.id)
 		query = query.populate req.$p.model.fieldsToPopulate.join(' ')
 		query.exec (err, doc)->
+			return next() if !doc
 
+			# append resolved value of nested paths to original doc
+			# so that we preserve virtual mongodoc fields as well
+			for field in req.$p.model.fields
+				doc[field.path] = utils.getFieldValueByPath(doc, field.path)
 			req.$p.row = doc
 			return next()
 		return
@@ -344,10 +349,18 @@ class Admin
 			console.log('ERR', err) if err
 			#console.log result.results
 
+			docs = []
+			for doc in result.results
+				# append resolved value of nested paths to original doc
+				# so that we preserve virtual mongodoc fields as well
+				for field in req.$p.model.fields
+					doc[field.path] = utils.getFieldValueByPath(doc, field.path)
+				docs.push doc
+
 			res.locals.getQueryString = (newObj)-> self._getQueryString(req, newObj)
 
 			self._render req, res, 'collection', {
-				docs:	result.results
+				docs:	docs
 				title:	req.$p.model.label
 				urlQuery:	req.query
 				pagination: result
@@ -401,17 +414,28 @@ class Admin
 					dataToSet = {}
 					dataToSet[k]=v for k,v of nform.data
 
-					# Just unset the '' file fields from the data to be set in the row
+					# parse field values
 					for field in req.$p.model.fields
-						if 'ObjectID' == field.instance && 'File' == field.options.ref && !dataToSet[field.path]
+						value = dataToSet[field.path]
+						#console.log('widget.type',nform.fields[field.path].widget.type, value);
+						# Just unset the '' file fields from the data to be set in the row
+						if 'ObjectID' == field.instance && 'File' == field.options.ref && !value
 							delete dataToSet[field.path]
+						# unset datetime fields that are 'undefined' strings
+						if 'datetime' == nform.fields[field.path].widget.type  && 'undefined' == value
+							delete dataToSet[field.path]
+						# convert stringified 'mixed' widget value back
+						if 'mixed' == nform.fields[field.path].widget.type && nform.fields[field.path].widget.toValue
+							dataToSet[field.path] = nform.fields[k].widget.toValue(value)
 
 					# Also set the conditions as field values
 					if req.$p.addMode
 						dataToSet[k] = v for k, v of req.$p.model.conditions
 						#return res.send 'WIP'
 
-					req.$p.row[k]=v for k,v of dataToSet
+					# map value of flattened nested paths to mongo document
+					for k,v of dataToSet
+						utils.updateFieldValueByPath(req.$p.row, k, v)
 
 					#return console.log '111',  nform.data, dataToSet, req.$p.row
 

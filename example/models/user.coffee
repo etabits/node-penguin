@@ -6,6 +6,16 @@ userSchema  = mongoose.Schema {
     email:          {type: String, $p: {label: 'E-Mail'}}
     password:       {type: String, $p: {hide: true}}
     isAdmin:        {type: Boolean}
+    tags: {type: Array, default: []}
+    meta: {
+        slug: {type: String}
+        thumb: {type: String}
+        settings: {type: mongoose.Schema.Types.Mixed}
+        deepMeta: {
+            deepSlug: String
+        }
+    }
+    data: mongoose.Schema.Types.Mixed
 }
 
 userSchema.virtual('$pTitle').get ()-> this.username

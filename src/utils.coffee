@@ -34,4 +34,31 @@ utils.createMongoQueryFromRequest = (req)->
 		query = mongoQuery.sort(req.$p.model.sort)
 	mongoQuery
 
+utils.getFieldValueByPath = (doc, fieldPath)->
+	return if !doc
+	tokens = fieldPath.split('.')
+	fieldValue = doc;
+	for token in tokens
+		if typeof fieldValue[token] == 'undefined' || fieldValue[token] == null
+			fieldValue = fieldValue[token];
+			break;
+		fieldValue = fieldValue[token];
+	return fieldValue
+
+# Note: this function updates the field values in the doc directly
+utils.updateFieldValueByPath = (doc, fieldPath, value)->
+	tokens = fieldPath.split('.')
+	if tokens.length <= 1
+		# is not a flattened path, update value
+		doc[fieldPath]=value
+		return
+
+	# only iterate up to n-1 token, because we can to hold the reference while updating it
+	ref = doc
+	lastToken = tokens[tokens.length-1]
+	for token, i in tokens when i < tokens.length - 1
+		ref = ref[token]
+	# update value
+	ref[lastToken]=value
+
 module.exports = utils
