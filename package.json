@@ -1,6 +1,6 @@
 {
   "name": "penguin",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Automatic administration interface based on your Mongoose models",
   "main": "index.js",
   "scripts": {
