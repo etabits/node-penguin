@@ -166,9 +166,10 @@ class Admin
 				#console.log 'ref: ', vModel.base, name, '->', details.options.ref
 				ret.fieldsToPopulate.push name
 				if 'select' == details.$p.widget
+					conditions = details.$p.refConditions || {}
 					getSelectOptions = (done)->
 						#console.log arguments
-						fieldOpts.getRefModel().obj.find (err, docs)->
+						fieldOpts.getRefModel().obj.find conditions, (err, docs)->
 							listOptions = {}
 							listOptions[doc._id] = doc.$pTitle for doc in docs
 							formFields[name].choices = listOptions
