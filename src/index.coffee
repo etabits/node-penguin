@@ -117,6 +117,8 @@ class Admin
 
 			models = {}
 			for modelName, model of mongoose.models
+				models[modelName] = model
+				# The following is for backwards compatibility
 				models[model.collection.name] = model
 			debug 'Models: obj', Object.keys(models)
 			debug 'Models: mongoose', Object.keys(mongoose.models)
