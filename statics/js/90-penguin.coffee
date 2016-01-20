@@ -15,7 +15,7 @@ createAndSubmitForm = (fields, action='')->
 $ ()->
 	$('input[type="datetime"]').combodate({
 			firstItem: 'name'
-			maxYear: 2015
+			maxYear: (new Date()).getFullYear()
 			minYear: 1940
 			minuteStep: 1
 			template:	'D-MM-YYYY @ HH : mm : ss'
