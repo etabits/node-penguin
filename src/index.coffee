@@ -266,7 +266,6 @@ class Admin
 		return next()
 
 	pId: (req, res, next)->
-		return res.send(404) if not req.params.id.match /^[0-9a-f]{24}$/
 		query = req.$p.model.obj.findById(req.params.id)
 		query = query.populate req.$p.model.fieldsToPopulate.join(' ')
 		query.exec (err, doc)->
