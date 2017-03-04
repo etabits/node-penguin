@@ -5,8 +5,12 @@ Automatically generates administration pages based on your Mongoose models.
 
 For basic use, you don't have to alter anything in your mongoose models definition, Penguin will read the definition and automagically create edit/add forms, in addition to a basic listing.
 
+## Example
+https://github.com/etabits/node-penguin-example
+
 ## Live example
 Check [penguin.etabits.com/admin/](http://penguin.etabits.com/admin/).
+*Temporarily offline!*
 
 ## Usage
 In your app:
