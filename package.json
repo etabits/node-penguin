@@ -22,7 +22,7 @@
   },
   "peerDependencies": {
     "express": "4.x",
-    "mongoose": "3.8.x"
+    "mongoose": "4.9.6"
   },
   "repository": {
     "type": "git",
