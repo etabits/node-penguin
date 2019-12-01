@@ -112,14 +112,18 @@ class Admin
 		debug 'Reading models at %s, from %s', path, process.cwd()
 		fs.readdir path, (err, files)->
 			debug 'Got the following model files:', files
-			for f in files
-				require "#{path}/#{f}"
-
 			models = {}
 			for modelName, model of mongoose.models
-				models[modelName] = model
-				# The following is for backwards compatibility
+				models[model.modelName] = model
+				# allows for using the pluralized name
 				models[model.collection.name] = model
+
+			for f in files
+				model = require "#{path}/#{f}"
+				models[model.modelName] = model
+				# allows for using the pluralized name
+				models[model.collection.name] = model
+
 			debug 'Models: obj', Object.keys(models)
 			debug 'Models: mongoose', Object.keys(mongoose.models)
 			
