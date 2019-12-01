@@ -193,7 +193,12 @@ class Admin
 			def.widget = defaults.typesMap[field.options.type.name][1]
 
 		if 'ObjectID' == field.instance
-			fieldOpts.getRefModel = ()-> self.modelDetails[mongoose.models[field.options.ref].collection.name]
+			fieldOpts.getRefModel = ()->
+				referenceModel = mongoose.models[field.options.ref]
+				if not referenceModel
+					console.error 'no such referenced model "%s" @"%s". We only have:', field.options.ref, field.path, Object.keys(mongoose.models)
+					return {}
+				self.modelDetails[referenceModel.collection.name]
 			# Automatically give the file widget for ref:File ObjectId fields
 			if 'File' == field.options.ref
 				fieldOpts.widget = 'file'
