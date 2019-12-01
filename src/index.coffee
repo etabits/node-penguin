@@ -136,6 +136,7 @@ class Admin
 			console.error 'Could not find model for', vModel
 			console.error 'We only have these models:', Object.keys(self.models)
 		overrides = if vModel.slug == vModel.base then {} else defaults.model$pOverrides
+
 		ret = merge true, defaults.model$p, model.$p, overrides, {
 				label:	@constructor._t(vModel.slug)
 				path:	"#{self.opts.mountPath}/#{vModel.slug}"
@@ -260,8 +261,8 @@ class Admin
 
 	## PARAMETERS
 	setupParams: =>
-		@router.param ':collection', @pCollection
-		@router.param ':id', @pId
+		@router.param 'collection', @pCollection
+		@router.param 'id', @pId
 			
 			
 		return
@@ -506,10 +507,11 @@ class Admin
 	getMulterMiddleware: ->
 		if not self.multerMiddleware
 			multer  = require('multer')
-			self.multerMiddleware = multer {
+			self.multerUpload = multer {
 				dest: './uploads/'
 				includeEmptyFields: true
 			}
+			self.multerMiddleware = self.multerUpload.any()
 
 		self.multerMiddleware
 
