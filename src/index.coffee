@@ -198,7 +198,7 @@ class Admin
 
 		if 'ObjectID' == field.instance
 			fieldOpts.getRefModel = ()->
-				referenceModel = mongoose.models[field.options.ref]
+				referenceModel = self.models[field.options.ref] || mongoose.models[field.options.ref]
 				if not referenceModel
 					console.error 'no such referenced model "%s" @"%s". We only have:', field.options.ref, field.path, Object.keys(mongoose.models)
 					return {}
