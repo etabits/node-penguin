@@ -34,7 +34,7 @@ class Admin
 		@opts = merge(defaults.opts, @opts)
 		@opts.staticsPath ?= "#{@opts.mountPath}/_statics"
 		@opts.templatesPath ?= path.resolve(__dirname, '../views/', '%s.jade')
-		debug = opts.debug if @opts.debug
+		debug = @opts.debug if @opts.debug
 		@opts.beforeMiddleware ?= (req, res, next)-> next()
 		console.log @opts
 		self.models = {}
