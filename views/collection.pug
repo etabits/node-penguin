@@ -3,7 +3,7 @@ include p/mixins
 
 block content
 	if model.showAddButton
-		a.pull-left.btn.btn-primary(href='#{model.path}/add'+getQueryString()) Add a New #{model.label.replace(/s$/, '')}...
+		a.pull-left.btn.btn-primary(href=`${model.path}/add${getQueryString()}`) Add a New #{model.label.replace(/s$/, '')}...
 	//- console.log(model)
 	if model.showSearchForm
 		form.form-inline.pull-right(role='form')
@@ -40,7 +40,7 @@ block content
 				tr(data-id=row.id, class=row.$pTableRowClass)
 					td
 						input(type='checkbox')
-						a.btn.btn-link.edit-link(href='#{model.path}/#{row.id}'+getQueryString()) Edit
+						a.btn.btn-link.edit-link(href=`${model.path}/${row.id}${getQueryString()}`) Edit
 					each field in model.fields
 						- var fieldValue = row[field.path]
 						- if (-1 == field.$p.display.indexOf('l')) continue;
@@ -49,7 +49,7 @@ block content
 						else if 'ObjectID' == field.instance
 							td
 								span.linked-document
-									a.fui-document(href='#{field.$p.getRefModel().path}/#{fieldValue._id}', title='Edit Linked Document')
+									a.fui-document(href=`${field.$p.getRefModel().path}/${fieldValue._id}`, title='Edit Linked Document')
 									|  
 									=fieldValue.$pTitle
 						else if fieldValue instanceof Date

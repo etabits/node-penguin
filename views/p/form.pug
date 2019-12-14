@@ -31,8 +31,8 @@ mixin field_radios(field, name, det)
 	- var optionClasses = 'inner-label'
 	- if (field.optionClasses) optionClasses+= ' '+ field.optionClasses
 	for l, v in field.choices
-		label.col-sm-4(for='#{det.id}_#{v}')
-			input(id='#{det.id}_#{v}', type='radio', value=v, name=name, checked=v===field.value)
+		label.col-sm-4(for=`${det.id}_${v}`)
+			input(id=`${det.id}_${v}`, type='radio', value=v, name=name, checked=v===field.value)
 			|  
 			span(class=optionClasses)=t(l)
 
@@ -44,13 +44,13 @@ mixin field_checkboxes(field, name, det)
 	br
 	for l, v in field.choices
 		- v2 = field.choices.length? l : v
-		label.col-sm-4(for='#{det.id}_#{v2}')
-			input(id='#{det.id}_#{v2}', type='checkbox', value=v2, name=name, checked=v2===field.value)
+		label.col-sm-4(for=`${det.id}_${v2}`)
+			input(id=`${det.id}_${v2}`, type='checkbox', value=v2, name=name, checked=v2===field.value)
 			|  
 			span(class=optionClasses)=t(l)
 
 mixin field_checkbox(field, name, det, widgetHTML)
-	label(for='id_#{name}')
+	label(for=`id_${name}`)
 		!= widgetHTML
 		|  
 		= det.label
@@ -110,12 +110,12 @@ mixin display_field(field, name)
 		else if 'ObjectID' == field.$pField.instance && 'text' == field.widget.type
 			+label(field, name, det)
 			div(class=det.fieldClasses)
-				input.form-control(type='text', id=det.id, name='#{name}_label', value=field.value? field.value.$pTitle : '')
-				input(id="#{det.id}_id", type='hidden', name=name, value=field.value? field.value._id.toString(): '')
+				input.form-control(type='text', id=det.id, name=`${name}_label`, value=field.value? field.value.$pTitle : '')
+				input(id=`${det.id}_id`, type='hidden', name=name, value=field.value? field.value._id.toString(): '')
 		else if 'mixed' == field.widget.type
 			+label(field, name, det)
 			div(class=det.fieldClasses)
-				textarea.form-control.field-widget-mixed-control(id=det.id, name='#{name}').
+				textarea.form-control.field-widget-mixed-control(id=det.id, name=name).
 					!{JSON.stringify(field.value)}
 		else
 			//- console.log (field.$pField)
@@ -155,7 +155,7 @@ mixin form(form, formOpts)
 				+field_hidden(field, name, formOpts.valueOverrides[name])
 			else
 				- var span = field.span? field.span : 12
-				div(class='col-xs-#{span} field-container-#{field.name}')
+				div(class=`col-xs-${span} field-container-${field.name}`)
 					- //console.log(field); break
 					+display_field(field, name)
 
