@@ -167,6 +167,8 @@ class Admin
 			}, fieldOpts.formFieldOpts
 			details.$p.formField = formFields[name] = fields[fieldOpts.type](formFieldOpts)
 
+
+
 			if 'ObjectID' == details.instance && 'undefined' != typeof details.options.ref
 				#console.log 'ref: ', vModel.base, name, '->', details.options.ref
 				ret.fieldsToPopulate.push name
@@ -183,6 +185,8 @@ class Admin
 
 					details.$p.tasks.push getSelectOptions
 					#console.log details.$p.tasks
+			else if details.$p.choices && !formFields[name].choices
+				formFields[name].choices = details.$p.choices
 
 
 		ret.form = forms.create formFields
