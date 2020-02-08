@@ -16,7 +16,13 @@ dateTimeToHTML = (name, f)->
 	value = f.value
 	if f.value instanceof Date
 		value = f.value.toISOString().substr(0, 19)
-	"<input type=\"#{this.type}\" id=\"id_#{name}\" name=\"#{name}\" value=\"#{value}\" />"
+	htmlNode('input', {
+		type: this.type,
+		id: "id_#{name}",
+		name: name,
+		value: value,
+		'data-template': f.$pField.$p.widgetTemplate
+	})
 
 textToHTML = (name, f)->
 	if !f.value
