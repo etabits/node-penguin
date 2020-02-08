@@ -1,4 +1,16 @@
 widgets = {}
+`
+function htmlNode(tag, attribs) {
+	html = '<' + tag
+	Object.entries(attribs)
+	.filter(([attr, val])=> typeof val !== 'undefined')
+	.forEach(([attr, val])=> {
+		html += ' ' + attr + '="' + val +'"'
+	})
+	html += '/>'
+	return html
+}
+`
 
 dateTimeToHTML = (name, f)->
 	value = f.value
