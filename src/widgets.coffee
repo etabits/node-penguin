@@ -3,7 +3,7 @@ widgets = {}
 function htmlNode(tag, attribs) {
 	html = '<' + tag
 	Object.entries(attribs)
-	.filter(([attr, val])=> typeof val !== 'undefined')
+	.filter(([attr, val])=> typeof val !== 'undefined' && val !== null)
 	.forEach(([attr, val])=> {
 		html += ' ' + attr + '="' + val +'"'
 	})
