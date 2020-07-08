@@ -12,7 +12,11 @@ utils.createSimpleAction = (updateDoc)->
 	}
 
 utils.createMongoQueryFromRequest = (req)->
-	conditions = merge true, req.$p.model.conditions, req.query.conditions
+	`const queryConditions = Object.fromEntries(
+		Object.entries(req.query.conditions)
+		.filter(([key,val])=>val!=='')
+	)`
+	conditions = merge true, req.$p.model.conditions, queryConditions
 
 	if req.query.q
 		rx = new RegExp(req.query.q, 'i')
