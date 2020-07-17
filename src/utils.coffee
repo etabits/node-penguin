@@ -13,7 +13,7 @@ utils.createSimpleAction = (updateDoc)->
 
 utils.createMongoQueryFromRequest = (req)->
 	`const queryConditions = Object.fromEntries(
-		Object.entries(req.query.conditions | {})
+		Object.entries(req.query.conditions || {})
 		.filter(([key,val])=>val!=='')
 	)`
 	conditions = merge true, req.$p.model.conditions, queryConditions
