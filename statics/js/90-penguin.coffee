@@ -17,6 +17,7 @@ $ ()->
 			firstItem: 'name'
 			maxYear: (new Date()).getFullYear()
 			minYear: 1940
+			maxYear: 2050
 			minuteStep: 1
 			template:	'D-MM-YYYY @ HH : mm : ss'
 			format:		'YYYY-MM-DDTHH:mm:ss'
