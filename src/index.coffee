@@ -442,8 +442,9 @@ class Admin
 						if 'datetime' == nform.fields[field.path].widget.type  && 'undefined' == value
 							delete dataToSet[field.path]
 						# convert stringified 'mixed' widget value back
-						if 'mixed' == nform.fields[field.path].widget.type && nform.fields[field.path].widget.toValue
-							dataToSet[field.path] = nform.fields[k].widget.toValue(value)
+						if ('mixed' == nform.fields[field.path].widget.type) && nform.fields[field.path].widget.toValue
+							# console.log(field.path, k, nform.fields[field.path].widget.toValue + '')
+							dataToSet[field.path] = nform.fields[field.path].widget.toValue(value)
 
 					# Also set the conditions as field values
 					if req.$p.addMode
